@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 class Recipe(models.Model):
     """Model representing a complete recipe"""
@@ -7,12 +8,14 @@ class Recipe(models.Model):
         max_length=200, 
         help_text='Enter a name for this recipe'
         )
-    servings = models.IntegerField(
-        help_text='Enter the number of servings this recipe makes'
+    servings = models.PositiveIntegerField(
+        help_text='Enter the number of servings this recipe makes',
+        validators=[MinValueValidator(1)]
         )
     nota_bene = models.TextField(
         help_text='Add any useful notes, hints or advice for this recipe', 
-        null=True
+        null=True,
+        blank=True
         )
 
     def __str__(self):
@@ -37,11 +40,13 @@ class Ingredient(models.Model):
     preparation = models.CharField(
         max_length=100, 
         help_text='Describe this ingredient"s preparation (e.g. finely minced) or leave blank', 
-        null=True
+        null=True,
+        blank=True
         )
 
     def __str__(self):
-        return '{0} {1}, {2}'.format(self.amount, self.name, self.preparation)
+        prep = ', ' + self.preparation if self.preparation else ''
+        return '{0} {1}{2}'.format(self.amount, self.name, prep)
 
 class Instruction(models.Model):
     """Model representing a single instruction in a recipe"""
@@ -51,8 +56,9 @@ class Instruction(models.Model):
         help_text='Choose a recipe to add an instruction to', 
         on_delete=models.CASCADE
         )
-    step_number = models.IntegerField(
-        help_text='Enter the order number for this instruction (e.g. step 1, step 2, etc.)'
+    step_number = models.PositiveIntegerField(
+        help_text='Enter the order number for this instruction (e.g. step 1, step 2, etc.)',
+        validators=[MinValueValidator(1)]
         )
     description = models.TextField(
         help_text="Add an instruction to the recipe"
@@ -62,4 +68,4 @@ class Instruction(models.Model):
         ordering = ['recipe', 'step_number']
 
     def __str__(self):
-        return '{0}...'.format(self.description[:100])
+        return '{0}: Step {1}'.format(self.recipe.name, self.step_number)
