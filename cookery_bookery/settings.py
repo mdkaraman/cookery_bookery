@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipes.apps.RecipesConfig',
+    'accounts.apps.AccountsConfig'
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,6 @@ STATIC_URL = '/static/'
 
 # Redirect to Home URL after login
 LOGIN_REDIRECT_URL = '/'
+
+# Allow for email testing (only in development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

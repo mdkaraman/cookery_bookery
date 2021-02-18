@@ -19,10 +19,12 @@ from django.conf import settings
 from django.views.generic import RedirectView
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('recipes/', include('recipes.urls')),
     path('', RedirectView.as_view(url='recipes/', permanent=True)),
+    path('accounts/', include('accounts.urls')), 
     path('accounts/', include('django.contrib.auth.urls')),
 ]
 
