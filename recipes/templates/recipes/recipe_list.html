@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>All Recipes</h1>
+  {% if recipe_list %}
+  <ul>
+    {% for recipe in recipe_list %}
+      <li>
+        <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>No recipes available :(</p>
+  {% endif %} 
+{% endblock %}

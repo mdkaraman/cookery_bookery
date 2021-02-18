@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.core.validators import MinValueValidator
 
 class Recipe(models.Model):
@@ -17,6 +18,12 @@ class Recipe(models.Model):
         null=True,
         blank=True
         )
+
+    class Meta:
+        ordering = ['name']
+
+    def get_absolute_url(self):
+        return reverse('recipe-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.name

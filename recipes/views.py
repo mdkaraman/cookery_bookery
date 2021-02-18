@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from recipes.models import Recipe, Ingredient, Instruction
+from django.views import generic
 
 def index(request):
     """View function for home page of site."""
@@ -15,3 +16,8 @@ def index(request):
 
     return render(request, 'index.html', context=context)
 
+class RecipeListView(generic.ListView):
+    model = Recipe
+
+class RecipeDetailView(generic.DetailView):
+    model = Recipe

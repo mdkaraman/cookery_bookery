@@ -10,8 +10,11 @@
   
   {% if newest_recipes%}
     <ul>
+      
       {% for recipe in newest_recipes%}
-        <li>{{ recipe.name }}</li>
+        <li>
+          <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
+        </li>
       {% endfor %}
       
     </ul>

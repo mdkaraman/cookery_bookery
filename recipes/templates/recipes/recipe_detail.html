@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <br>
+  <h1>{{ recipe.name }}</h1>
+
+  <p><strong>Servings:</strong> {{ recipe.servings }}</p>
+
+
+    <h3>Ingredients</h3>
+    <ul style="list-style-type:none;">
+      {% for ingredient in recipe.ingredient_set.all %}
+       <li>{{ ingredient }}</li>
+      {% endfor %}  
+    </ul>
+
+
+  <br>
+    <h3>Instructions</h3>
+
+    {% for step in recipe.instruction_set.all %}
+      <br>
+      <p><b>Step {{ step.step_number }}</b></p>
+      <p>{{ step.description }}</p>
+    {% endfor %}
+
+{% endblock %}
