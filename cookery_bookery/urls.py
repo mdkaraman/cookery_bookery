@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('recipes/', include('recipes.urls')),
     path('', RedirectView.as_view(url='recipes/', permanent=True)),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 # Allow Django to serve static files (in development only)
