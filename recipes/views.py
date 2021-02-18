@@ -18,6 +18,7 @@ def index(request):
 
 class RecipeListView(generic.ListView):
     model = Recipe
+    paginate_by = 10
 
 class RecipeDetailView(generic.DetailView):
     model = Recipe
