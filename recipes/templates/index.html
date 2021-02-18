@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>COOKERY BOOKERY</h1>
+  <br>
+  <p>Cookery (n.) The art or process of preparing food for the table, by dressing, compounding, and the application of heat.</p>
+  <p>Bookery (n.) A collection of books; <b>a library</b>, a bookshop.</p>
+  <br>  
+  <h2>Newly Added Recipes</h2>
+  
+  {% if newest_recipes%}
+    <ul>
+      {% for recipe in newest_recipes%}
+        <li>{{ recipe.name }}</li>
+      {% endfor %}
+      
+    </ul>
+  {% else %}
+    <p>There are no new recipes :(</p>
+  {% endif %}
+
+{% endblock %}
