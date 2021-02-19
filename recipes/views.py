@@ -1,14 +1,11 @@
 from django.shortcuts import render
 from recipes.models import Recipe, Ingredient, Instruction
 from django.views import generic
-<<<<<<< HEAD
 from .forms import RecipeForm, IngredientForm, InstructionForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-=======
 from django.utils.translation import ugettext_lazy as _
->>>>>>> account/forms.py created and email field added to signup page; signup.html customized for error messages
 
 def index(request):
     """View function for home page of site."""
