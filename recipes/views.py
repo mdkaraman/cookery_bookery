@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from recipes.models import Recipe, Ingredient, Instruction
 from django.views import generic
+from .forms import RecipeForm, IngredientForm, InstructionForm
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 def index(request):
@@ -24,3 +27,27 @@ class RecipeListView(generic.ListView):
 class RecipeDetailView(generic.DetailView):
     model = Recipe
 
+def user_submit_recipe(request):
+    """View function for user recipe submission page."""
+
+    form = RecipeForm(request.POST)
+
+    if request.method == 'POST':
+        
+
+        if form.is_valid():
+            recipe = Recipe.objects.create(
+                name=form.cleaned_data['name'],
+                servings=form.cleaned_data['servings'],
+                nota_bene=form.cleaned_data['nota_bene']
+            )
+    
+            return HttpResponseRedirect(reverse('recipe-detail', args=[recipe.id]))
+    else:
+        pass
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'recipes/submit_recipe.html', context)
