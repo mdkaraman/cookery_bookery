@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>My Account</h1>
+<br>
+<p><b>Username:</b> {{ user.username }}</p>
+<p><b>Email:</b> {{ user.email }}</p>
+<p><a href="{% url 'password_reset' %}">Reset Password</a></p>
+{% endblock %}

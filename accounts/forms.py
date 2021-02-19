@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class SignUpForm(UserCreationForm):
-    username = forms.CharField(max_length=30)
+    username = forms.CharField(max_length=150)
     email = forms.EmailField(max_length=200)
 
     def clean(self):
