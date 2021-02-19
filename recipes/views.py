@@ -5,6 +5,7 @@ from .forms import RecipeForm, IngredientForm, InstructionForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from django.utils.translation import ugettext_lazy as _
 
 def index(request):
     """View function for home page of site."""
