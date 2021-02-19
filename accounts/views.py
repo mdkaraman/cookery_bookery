@@ -17,4 +17,3 @@ class UserDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_object(self):
         return User.objects.get(username=self.request.user)
-    
