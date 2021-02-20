@@ -4,8 +4,9 @@ from django.views import generic
 from .forms import RecipeForm, IngredientForm, InstructionForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.decorators import login_required
+
 
 def index(request):
     """View function for home page of site."""
@@ -28,6 +29,7 @@ class RecipeListView(generic.ListView):
 class RecipeDetailView(generic.DetailView):
     model = Recipe
 
+@login_required
 def user_submit_recipe(request):
     """View function for user recipe submission page."""
 

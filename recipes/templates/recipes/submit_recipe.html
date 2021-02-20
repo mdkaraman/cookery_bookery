@@ -4,13 +4,14 @@
     <h1>COOKERY BOOKERY</h1> 
     <br>
 
+    <h2>Submit a Recipe</h2>
     <form method="post">
         {% csrf_token %}
     
     
         {% for field in form %}
           <div class="fieldWrapper">
-            {{ field.label_tag }} {{ field }}
+            <b>{{ field.label_tag }}</b> {{ field }}
             {% if field.help_text %}
               <p class="help">{{ field.help_text|safe }}</p>
             {% endif %}
