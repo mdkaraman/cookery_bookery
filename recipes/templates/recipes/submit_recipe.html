@@ -8,8 +8,8 @@
     <form method="post">
         {% csrf_token %}
     
-    
-        {% for field in form %}
+        
+        {% for field in recipe_form %}
           <div class="fieldWrapper">
             <b>{{ field.label_tag }}</b> {{ field }}
             {% if field.help_text %}
@@ -17,8 +17,9 @@
             {% endif %}
           </div>
         {% endfor %}
-    
         <button type="submit">Create Recipe</button>
-      </form>
+
+        
+    </form>
 
 {% endblock %}

@@ -65,7 +65,7 @@ class Instruction(models.Model):
         on_delete=models.CASCADE
         )
     step_number = models.PositiveIntegerField(
-        help_text='Enter the order number for this instruction (e.g. step 1, step 2, etc.)',
+        help_text='Enter the step number for this instruction (e.g. step 1, step 2, etc.)',
         validators=[MinValueValidator(1)]
         )
     description = models.TextField(
