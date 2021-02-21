@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>COOKERY BOOKERY</h1> 
+<br>
+
+<h2>Submit a Recipe</h2>
+
+  <p><b>Name:</b> {{ recipe.name }}</p>
+  <p><b>Servings:</b> {{ recipe.servings }}</p>
+  <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
+
+  <h3>Ingredients</h3>
+  
+  <ul>
+    {% for ingredient in recipe.ingredient_set.all %}
+      <li>{{ ingredient }}</li>
+    {% endfor %} 
+  </ul>
+
+  <h3>Add Instructions</h3>
+
+  <ul>
+    {% for instruction in recipe.instruction_set.all %}
+      <p><b>Step {{ instruction.step_number }}</b></p>
+      <p>{{ instruction.description }}</p>
+    {% endfor %} 
+  </ul>
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input type="submit" value="Add Instruction">
+  </form>
+
+  {% if recipe %}
+  <br>
+    <h4>All done adding instructions?</h4>
+    <form action='{% url "recipe-detail" recipe.id %}' method="get"><button type="submit">Submit Recipe</button></form>
+  {% endif %}
+  <br>
+  <br>
+  <br>
+{% endblock %}
+

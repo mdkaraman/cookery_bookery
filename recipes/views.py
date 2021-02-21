@@ -7,7 +7,9 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
 
 def index(request):
     """View function for home page of site."""
@@ -29,7 +31,7 @@ class RecipeListView(generic.ListView):
 
 class RecipeDetailView(generic.DetailView):
     model = Recipe
-
+'''
 @login_required
 def user_submit_recipe(request):
     """View function for user recipe submission page."""
@@ -55,6 +57,7 @@ def user_submit_recipe(request):
 
     return render(request, 'recipes/submit_recipe.html', context)
 
+'''
 @login_required
 def user_add_ingredient(request, pk):
     
@@ -109,3 +112,51 @@ def user_add_instruction(request, pk):
 
     return render(request, 'recipes/add_instruction.html', context)
 
+class RecipeCreate(LoginRequiredMixin, CreateView):
+    model = Recipe
+    fields = ['name', 'servings', 'nota_bene']
+    
+    def get_success_url(self):
+        return reverse('add-ingredient', kwargs={'pk': self.object.id})
+
+class IngredientCreate(LoginRequiredMixin, CreateView):
+    model = Ingredient
+    fields = ['name', 'amount', 'preparation']
+   
+    def dispatch(self, request, *args, **kwargs):
+        self.recipe = get_object_or_404(Recipe, pk=kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipe'] = self.recipe
+        return context
+    
+    def get_success_url(self):
+        return reverse('add-ingredient', kwargs={'pk': self.object.recipe.id})
+
+    def form_valid(self, form):
+        form.instance.recipe = self.recipe
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+class InstructionCreate(LoginRequiredMixin, CreateView):
+    model = Instruction
+    fields = ['step_number', 'description']
+   
+    def dispatch(self, request, *args, **kwargs):
+        self.recipe = get_object_or_404(Recipe, pk=kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipe'] = self.recipe
+        return context
+
+    def get_success_url(self):
+        return reverse('add-instruction', kwargs={'pk': self.object.recipe.id})
+
+    def form_valid(self, form):
+        form.instance.recipe = self.recipe
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
