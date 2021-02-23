@@ -12,7 +12,7 @@ class Recipe(models.Model):
         )
     servings = models.PositiveIntegerField(
         help_text='Enter the number of servings this recipe makes',
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(1, message='Your recipe needs to make at least 1 serving!')]
         )
     nota_bene = models.TextField(
         help_text='Add any useful notes, hints or advice for this recipe', 
@@ -66,7 +66,7 @@ class Instruction(models.Model):
         )
     step_number = models.PositiveIntegerField(
         help_text='Enter the step number for this instruction (e.g. step 1, step 2, etc.)',
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(1, message='Your step numbers should be greater than or equal to 1!')]
         )
     description = models.TextField(
         help_text="Add an instruction to the recipe"

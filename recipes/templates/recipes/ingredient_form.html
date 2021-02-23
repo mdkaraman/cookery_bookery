@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>COOKERY BOOKERY</h1> 
+<br>
+
+<h2>Submit a Recipe</h2>
+
+  <p><b>Name:</b> {{ recipe.name }}</p>
+  <p><b>Servings:</b> {{ recipe.servings }}</p>
+  <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
+
+  <p><em>Need to change something?</em></p>
+  <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
+  
+  <h3>Add Ingredients</h3>
+  
+  <ul>
+    {% for ingredient in recipe.ingredient_set.all %}
+      {% if pk != ingredient.id %}
+        <li>{{ ingredient }} - 
+          <a href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> Edit</a> -
+          <a href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+        </li>
+      {% endif %}
+    {% endfor %} 
+  </ul>
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    <input type="submit" value="Add Ingredient">
+  </form>
+
+  {% if recipe %}
+  <br>
+    <h4>All done adding ingredients?</h4>
+    <form action='{% url "add-instruction" recipe.id %}' method="get"><button type="submit">Add Instructions</button></form>
+  {% endif %}
+  <br>
+  <br>
+  <br>
+{% endblock %}
+

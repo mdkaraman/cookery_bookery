@@ -33,8 +33,9 @@
         <button type="submit">Add Ingredient</button>
     </form>
 
+    {% if recipe.id %}
     <br>
     <h4>All done adding ingredients?</h4>
     <form action='{% url "add-instruction" recipe.id %}' method="get"><button type="submit">Add Instructions</button></form>
-
+    {% endif %}
 {% endblock %}
