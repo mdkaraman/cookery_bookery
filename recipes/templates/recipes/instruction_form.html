@@ -10,20 +10,34 @@
   <p><b>Servings:</b> {{ recipe.servings }}</p>
   <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
 
+  <p><em>Need to change something?</em></p>
+  <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
+
   <h3>Ingredients</h3>
   
   <ul>
     {% for ingredient in recipe.ingredient_set.all %}
-      <li>{{ ingredient }}</li>
-    {% endfor %} 
+        <li>{{ ingredient }} - 
+            <a href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}">Edit</a> -
+            <a href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+        </li>
+    {% endfor %}
+    <br> 
+    <p><em>Forgot to add an ingredient?</em></p>
+    <p><a href="{% url 'add-ingredient' recipe.id %}">Add Ingredient</a></p>
   </ul>
 
   <h3>Add Instructions</h3>
 
   <ul>
     {% for instruction in recipe.instruction_set.all %}
-      <p><b>Step {{ instruction.step_number }}</b></p>
-      <p>{{ instruction.description }}</p>
+        {% if pk != instruction.id %}
+            <p><b>Step {{ instruction.step_number }}</b> - 
+                <a href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}">Edit</a> - 
+                <a href="{% url 'delete-instruction' instruction.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+            </p>
+            <p>{{ instruction.description }}</p>
+        {% endif %}
     {% endfor %} 
   </ul>
 
@@ -32,6 +46,7 @@
     <table>
     {{ form.as_table }}
     </table>
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
     <input type="submit" value="Add Instruction">
   </form>
 

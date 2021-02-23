@@ -10,11 +10,19 @@
   <p><b>Servings:</b> {{ recipe.servings }}</p>
   <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
 
+  <p><em>Need to change something?</em></p>
+  <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
+  
   <h3>Add Ingredients</h3>
   
   <ul>
     {% for ingredient in recipe.ingredient_set.all %}
-      <li>{{ ingredient }}</li>
+      {% if pk != ingredient.id %}
+        <li>{{ ingredient }} - 
+          <a href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> Edit</a> -
+          <a href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+        </li>
+      {% endif %}
     {% endfor %} 
   </ul>
 
@@ -23,6 +31,7 @@
     <table>
     {{ form.as_table }}
     </table>
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
     <input type="submit" value="Add Ingredient">
   </form>
 

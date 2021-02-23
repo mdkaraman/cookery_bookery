@@ -10,6 +10,9 @@
     <p><b>Servings:</b> {{ recipe.servings }}</p>
     <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
 
+    <p><em>Need to change something?</em></p>
+    <p><a href="{% url 'update-recipe' recipe.id %}"> Edit Recipe</a></p>
+
     <h3>Ingredients</h3>
     <ul>
     {% for ingredient in recipe.ingredient_set.all %}
