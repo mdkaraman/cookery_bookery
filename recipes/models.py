@@ -15,7 +15,8 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1, message='Your recipe needs to make at least 1 serving!')]
         )
     nota_bene = models.TextField(
-        help_text='Add any useful notes, hints or advice for this recipe', 
+        help_text='Add any useful notes, hints or advice for this recipe',
+        verbose_name='N.B.', 
         null=True,
         blank=True
         )

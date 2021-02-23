@@ -8,8 +8,10 @@
 
   <p><b>Name:</b> {{ recipe.name }}</p>
   <p><b>Servings:</b> {{ recipe.servings }}</p>
-  <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
-
+  {% if recipe.nota_bene %}
+    <p><b>N.B.</b> {{ recipe.nota_bene }}</p>
+  {% endif %}
+  
   <h3>Ingredients</h3>
   
   <ul>
