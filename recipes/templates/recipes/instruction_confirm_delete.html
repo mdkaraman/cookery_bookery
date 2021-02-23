@@ -23,17 +23,16 @@
   <ul>
     {% for instruction in recipe.instruction_set.all %}
         {% if pk != instruction.id %}
-          <p><b>Step {{ instruction.step_number }}</b> - <a href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}">Edit</a></p>
+          <p><b>Step {{ instruction.step_number }}</b></p>
           <p>{{ instruction.description }}</p>
         {% else %}
-          <p><b>Step {{ instruction.step_number }}</b>- Are you sure you want to delete this instruction? 
-            <p>{{ instruction.description }}</p>
-            <form action="" method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="next" value="{{ request.GET.next }}">
-              <input type="submit" action="" value="Yes, delete." />
-            </form>
-          </p>
+          <p><b>Step {{ instruction.step_number }}</b> - <em class='text-danger'>Are you sure you want to delete this instruction?</em></p> 
+          <p>{{ instruction.description }}</p>
+          <form action="" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <input type="submit" action="" value="Yes, delete." />
+          </form> 
         {% endif %}
     {% endfor %} 
   </ul>

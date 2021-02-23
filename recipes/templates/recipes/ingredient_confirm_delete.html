@@ -17,7 +17,7 @@
         {% if pk != ingredient.id %}
             <li>{{ ingredient }}</li>
         {% else %}
-            <li>{{ ingredient }} - Are you sure you want to delete this ingredient? <form action="" method="POST">
+            <li>{{ ingredient }} - <em class='text-danger'>Are you sure you want to delete this ingredient?</em> <form action="" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ request.GET.next }}">
                 <input type="submit" action="" value="Yes, delete." />

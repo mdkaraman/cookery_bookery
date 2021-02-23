@@ -65,11 +65,13 @@ class Instruction(models.Model):
         on_delete=models.CASCADE
         )
     step_number = models.PositiveIntegerField(
-        help_text='Enter the step number for this instruction (e.g. step 1, step 2, etc.)',
-        validators=[MinValueValidator(1, message='Your step numbers should be greater than or equal to 1!')]
+        help_text='Enter the step number for this instruction (e.g. step 1)',
+        validators=[MinValueValidator(1, message='Your step numbers should be greater than or equal to 1!')],
+        verbose_name='Step'
         )
     description = models.TextField(
-        help_text="Add an instruction to the recipe"
+        help_text="Describe this step's instructions",
+        verbose_name='Instruction'
         )
 
     class Meta:

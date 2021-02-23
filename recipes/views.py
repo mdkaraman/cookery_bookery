@@ -77,12 +77,15 @@ class IngredientUpdate(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.next = request.POST.get('next', '/')
+        self.referer = request.META.get('HTTP_REFERER', '')
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['recipe'] = self.object.recipe
         context['pk'] = self.object.id
+        context['update'] = True
+        context['instruction_next'] = 'instruction' in self.referer
         return context
 
     def get_success_url(self):
@@ -131,12 +134,15 @@ class InstructionUpdate(LoginRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.next = request.POST.get('next', '/')
+        self.referer = request.META.get('HTTP_REFERER', '')
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['recipe'] = self.object.recipe
         context['pk'] = self.object.id
+        context['update'] = True
+        context['instruction_next'] = 'instruction' in self.referer
         return context
 
     def get_success_url(self):

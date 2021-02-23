@@ -10,17 +10,30 @@
   <p><b>Servings:</b> {{ recipe.servings }}</p>
   <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
 
-  <p><em>Need to change something?</em></p>
-  <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
   
-  <h3>Add Ingredients</h3>
-  
+    <p><em>Need to change something?</em></p>
+    {% if update %}
+      <p><em>You need to finish editing this ingredient before you can edit your recipe!</em></p>
+    {% else %}
+      <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
+    {% endif %}
+
+
+  {% if update and instruction_next %}
+    <h3>Ingredients</h3>  
+  {% else %}
+    <h3>Add Ingredients</h3>
+  {% endif %}
+
+
   <ul>
     {% for ingredient in recipe.ingredient_set.all %}
       {% if pk != ingredient.id %}
-        <li>{{ ingredient }} - 
+        <li>{{ ingredient }} 
+          {% if not update %} - 
           <a href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> Edit</a> -
           <a href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+          {% endif %}
         </li>
       {% endif %}
     {% endfor %} 
@@ -28,6 +41,9 @@
 
   <form action="" method="post">
     {% csrf_token %}
+    {% if update %}
+      <h4>Edit Ingredient</h4>
+    {% endif %}
     <table>
     {{ form.as_table }}
     </table>

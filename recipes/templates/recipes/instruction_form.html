@@ -9,22 +9,33 @@
   <p><b>Name:</b> {{ recipe.name }}</p>
   <p><b>Servings:</b> {{ recipe.servings }}</p>
   <p><b>Nota bene:</b> {{ recipe.nota_bene }}</p>
-
+  
   <p><em>Need to change something?</em></p>
-  <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
-
+  {% if update %}
+    <p><em>You need to finish editing this instruction before you can edit your recipe!</em></p>
+  {% else %}
+    <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
+  {% endif %}
+  
   <h3>Ingredients</h3>
   
   <ul>
     {% for ingredient in recipe.ingredient_set.all %}
-        <li>{{ ingredient }} - 
+        <li>{{ ingredient }}
+          {% if not update %} - 
             <a href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}">Edit</a> -
             <a href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+          {% endif %}
         </li>
     {% endfor %}
-    <br> 
-    <p><em>Forgot to add an ingredient?</em></p>
-    <p><a href="{% url 'add-ingredient' recipe.id %}">Add Ingredient</a></p>
+    <br>
+    {% if not update %} 
+      <p><em>Forgot to add an ingredient?</em></p>
+      <p><a href="{% url 'add-ingredient' recipe.id %}">Add Ingredient</a></p>
+    {% else %}
+      <p><em>Need to add, edit or delete an ingredient?</em></p>
+      <p><em>You need to finish editing this instruction before you can edit your ingredients!</em></p>
+    {% endif %}
   </ul>
 
   <h3>Add Instructions</h3>
@@ -32,9 +43,11 @@
   <ul>
     {% for instruction in recipe.instruction_set.all %}
         {% if pk != instruction.id %}
-            <p><b>Step {{ instruction.step_number }}</b> - 
+            <p><b>Step {{ instruction.step_number }}</b>
+              {% if not update %} - 
                 <a href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}">Edit</a> - 
                 <a href="{% url 'delete-instruction' instruction.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+              {% endif %}
             </p>
             <p>{{ instruction.description }}</p>
         {% endif %}
@@ -43,6 +56,11 @@
 
   <form action="" method="post">
     {% csrf_token %}
+    
+    {% if update %}
+      <h4>Edit Ingredient</h4>
+    {% endif %}
+    
     <table>
     {{ form.as_table }}
     </table>
