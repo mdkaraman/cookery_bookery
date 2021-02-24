@@ -33,7 +33,7 @@ class RecipeDetailView(generic.DetailView):
     model = Recipe
 
 
-"""********************** CUSTOM MIXINS ********************************************"""
+"""********************** CUSTOM MIXINS ****************************"""
 
 class CustomCreateMixin:
     """ Custom mixin used by CreateViews for Recipe, Ingredient and Instruction models. """
@@ -69,14 +69,20 @@ class CustomCreateMixin:
         else:
             return reverse('add-instruction', kwargs={'pk': self.object.recipe.id})
 
+class CustomUpdateOrDeleteMixin:
+    """ Base class inherited by CustomUpdate and CustomDelete mixins. """
 
-class CustomUpdateMixin:
-    """ Custom mixin used by UpdateViews for Recipe, Ingredient and Instruction models. """
-    
     def dispatch(self, request, *args, **kwargs):
         # Get previous page url to use in success url
         self.next = request.GET.get('next', '/')
         return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        # Send user back to the previous page
+        return self.next
+
+class CustomUpdateMixin(CustomUpdateOrDeleteMixin):
+    """ Custom mixin used by UpdateViews for Recipe, Ingredient and Instruction models. """
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -89,18 +95,9 @@ class CustomUpdateMixin:
         # Used by ingredient template for maintaining visual consistency with the next page rendered
         context['instruction_next'] = 'instruction' in self.next
         return context
-    
-    def get_success_url(self):
-        # Send user back to the previous page
-        return self.next
 
-class CustomDeleteMixin:
+class CustomDeleteMixin(CustomUpdateOrDeleteMixin):
     """ Custom mixin used by DeleteViews for Recipe, Ingredient and Instruction models. """
-    
-    def dispatch(self, request, *args, **kwargs):
-        # Get previous page url to use in success url
-        self.next = request.POST.get('next', '/')
-        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -108,11 +105,7 @@ class CustomDeleteMixin:
         context['pk'] = self.object.id
         return context
 
-    def get_success_url(self):
-        # Send user back to the previous page
-        return self.next
-
-"""*********************************************************************************"""
+"""*****************************************************************"""
 
 
 class RecipeCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
