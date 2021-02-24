@@ -5,7 +5,7 @@ from recipes.models import Recipe, Ingredient, Instruction
 from django.views import generic
 from .forms import RecipeForm, IngredientForm, InstructionForm
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -122,6 +122,10 @@ class RecipeUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Recipe
     fields = ['name', 'servings', 'nota_bene']
 
+class RecipeDeleteView(LoginRequiredMixin, DeleteView):
+    model = Recipe
+    success_url = reverse_lazy('all-recipes')
+
 class IngredientCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Ingredient
     fields = ['name', 'amount', 'preparation']
@@ -143,4 +147,5 @@ class InstructionUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
  
 class InstructionDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
     model = Instruction
+
    
