@@ -41,11 +41,12 @@ class CustomCreateMixin:
     def dispatch(self, request, *args, **kwargs):
         path = request.path
         if 'ingredient' in path or 'instruction' in path:
-            # Gets the associated recipe if this is an ingredient or instruction view 
+            # This is an ingredient/instruction view, so get the recipe 
             self.recipe = get_object_or_404(Recipe, pk=kwargs['pk'])
         else:
-            # Sets the recipe to None if this is a recipe view (Recipe model has no 'recipe' field!)
-            self.recipe = None
+            # This is a recipe view, so get the user
+            self.user = request.user
+            self.recipe = None       
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -55,8 +56,13 @@ class CustomCreateMixin:
         return context
 
     def form_valid(self, form):
-        # Set the recipe field on the form and save
-        form.instance.recipe = self.recipe
+        if self.recipe:
+            # Set the recipe field on the ingredient/instruction form
+            form.instance.recipe = self.recipe
+        else:
+            # Set the owner field on the recipe form
+            form.instance.author = self.user
+
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
     

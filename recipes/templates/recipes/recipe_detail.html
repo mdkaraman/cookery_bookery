@@ -5,7 +5,11 @@
   <br>
 
   <h1>{{ recipe.name }}</h1>
-
+  
+  {% if recipe.author %}
+    <p>By {{ recipe.author }}</p>
+  {% endif %}
+  
   <p><strong>Servings:</strong> {{ recipe.servings }}</p>
 
 
