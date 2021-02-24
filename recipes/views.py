@@ -11,28 +11,25 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
 
 
-def index(request):
-    """View function for home page of site."""
+class IndexView(generic.TemplateView):
+    """ View class for home page of site. """
 
-    # Fetch the number of recipe records
-    num_recipes = Recipe.objects.count()
-    newest_recipes = Recipe.objects.order_by('-pk')[:10]
+    template_name='index.html'
 
-    context ={
-        'num_recipes': num_recipes,
-        'newest_recipes': newest_recipes
-    }
-
-    return render(request, 'index.html', context=context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['newest_recipes'] = Recipe.objects.order_by('-pk')[:10]
+        return context
 
 class RecipeListView(generic.ListView):
+    """ Generic list view for displaying all recipes. """
     model = Recipe
     paginate_by = 10
 
 class RecipeDetailView(generic.DetailView):
+    """ Generic detail view for displaying individual recipes. """
     model = Recipe
 
 
