@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import render
 from recipes.models import Recipe, Ingredient, Instruction
 from django.views import generic
@@ -33,134 +35,116 @@ class RecipeListView(generic.ListView):
 class RecipeDetailView(generic.DetailView):
     model = Recipe
 
-class RecipeCreate(LoginRequiredMixin, CreateView):
-    model = Recipe
-    fields = ['name', 'servings', 'nota_bene']
-    
-    def get_success_url(self):
-        return reverse('add-ingredient', kwargs={'pk': self.object.id})
 
-class RecipeUpdate(LoginRequiredMixin, UpdateView):
-    model = Recipe
-    fields = ['name', 'servings', 'nota_bene']
+"""********************** CUSTOM MIXINS ********************************************"""
+
+class CustomCreateMixin:
+    """ Custom mixin used by CreateViews for Recipe, Ingredient and Instruction models. """
 
     def dispatch(self, request, *args, **kwargs):
-        self.next = request.POST.get('next', '/')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_success_url(self):
-        return self.next
-
-class IngredientCreate(LoginRequiredMixin, CreateView):
-    model = Ingredient
-    fields = ['name', 'amount', 'preparation']
-   
-    def dispatch(self, request, *args, **kwargs):
-        self.recipe = get_object_or_404(Recipe, pk=kwargs['pk'])
+        path = request.path
+        if 'ingredient' in path or 'instruction' in path:
+            # Gets the associated recipe if this is an ingredient or instruction view 
+            self.recipe = get_object_or_404(Recipe, pk=kwargs['pk'])
+        else:
+            # Sets the recipe to None if this is a recipe view (Recipe model has no 'recipe' field!)
+            self.recipe = None
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['recipe'] = self.recipe
-        return context
-    
-    def get_success_url(self):
-        return reverse('add-ingredient', kwargs={'pk': self.object.recipe.id})
-
-    def form_valid(self, form):
-        form.instance.recipe = self.recipe
-        self.object = form.save()
-        return HttpResponseRedirect(self.get_success_url())
-
-class IngredientUpdate(LoginRequiredMixin, UpdateView):
-    model = Ingredient
-    fields = ['name', 'amount', 'preparation']
-
-    def dispatch(self, request, *args, **kwargs):
-        self.next = request.POST.get('next', '/')
-        self.referer = request.META.get('HTTP_REFERER', '')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['recipe'] = self.object.recipe
-        context['pk'] = self.object.id
-        context['update'] = True
-        context['instruction_next'] = 'instruction' in self.referer
-        return context
-
-    def get_success_url(self):
-        return self.next
-
-class IngredientDelete(LoginRequiredMixin, DeleteView):
-    model = Ingredient
-
-    def dispatch(self, request, *args, **kwargs):
-        self.next = request.POST.get('next', '/')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['recipe'] = self.object.recipe
-        context['pk'] = self.object.id
-        return context
-
-    def get_success_url(self):
-        return self.next
-
-class InstructionCreate(LoginRequiredMixin, CreateView):
-    model = Instruction
-    fields = ['step_number', 'description']
-   
-    def dispatch(self, request, *args, **kwargs):
-        self.recipe = get_object_or_404(Recipe, pk=kwargs['pk'])
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        # Add the recipe as additional context for the template
         context['recipe'] = self.recipe
         return context
 
-    def get_success_url(self):
-        return reverse('add-instruction', kwargs={'pk': self.object.recipe.id})
-
     def form_valid(self, form):
+        # Set the recipe field on the form and save
         form.instance.recipe = self.recipe
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
+    
+    def get_success_url(self):
+        # Send user to the appropirate 'add' page based on the type of object that was created 
+        if isinstance(self.object, Recipe):
+            return reverse('add-ingredient', kwargs={'pk': self.object.id})
+        elif isinstance(self.object, Ingredient):
+            return reverse('add-ingredient', kwargs={'pk': self.object.recipe.id})
+        else:
+            return reverse('add-instruction', kwargs={'pk': self.object.recipe.id})
 
-class InstructionUpdate(LoginRequiredMixin, UpdateView):
+
+class CustomUpdateMixin:
+    """ Custom mixin used by UpdateViews for Recipe, Ingredient and Instruction models. """
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Get previous page url to use in success url
+        self.next = request.GET.get('next', '/')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Extract recipe id from query parameter 
+        recipe_id = re.findall(r'[0-9]+', self.next)[0]
+        context['recipe'] = Recipe.objects.get(id=recipe_id)
+        context['pk'] = self.object.id
+        # Used by template to render update-specific messages and formatting 
+        context['update'] = True
+        # Used by ingredient template for maintaining visual consistency with the next page rendered
+        context['instruction_next'] = 'instruction' in self.next
+        return context
+    
+    def get_success_url(self):
+        # Send user back to the previous page
+        return self.next
+
+class CustomDeleteMixin:
+    """ Custom mixin used by DeleteViews for Recipe, Ingredient and Instruction models. """
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Get previous page url to use in success url
+        self.next = request.POST.get('next', '/')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipe'] = self.object.recipe
+        context['pk'] = self.object.id
+        return context
+
+    def get_success_url(self):
+        # Send user back to the previous page
+        return self.next
+
+"""*********************************************************************************"""
+
+
+class RecipeCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
+    model = Recipe
+    fields = ['name', 'servings', 'nota_bene']
+
+class RecipeUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
+    model = Recipe
+    fields = ['name', 'servings', 'nota_bene']
+
+class IngredientCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
+    model = Ingredient
+    fields = ['name', 'amount', 'preparation']
+    
+class IngredientUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
+    model = Ingredient
+    fields = ['name', 'amount', 'preparation']
+
+class IngredientDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
+    model = Ingredient
+ 
+class InstructionCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Instruction
     fields = ['step_number', 'description']
-
-    def dispatch(self, request, *args, **kwargs):
-        self.next = request.POST.get('next', '/')
-        self.referer = request.META.get('HTTP_REFERER', '')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['recipe'] = self.object.recipe
-        context['pk'] = self.object.id
-        context['update'] = True
-        context['instruction_next'] = 'instruction' in self.referer
-        return context
-
-    def get_success_url(self):
-        return self.next
-
-class InstructionDelete(LoginRequiredMixin, DeleteView):
+    
+class InstructionUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Instruction
-
-    def dispatch(self, request, *args, **kwargs):
-        self.next = request.POST.get('next', '/')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['recipe'] = self.object.recipe
-        context['pk'] = self.object.id
-        return context
-
-    def get_success_url(self):
-        return self.next
+    fields = ['step_number', 'description']
+ 
+class InstructionDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
+    model = Instruction
+   
