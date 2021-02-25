@@ -15,7 +15,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 class IndexView(generic.TemplateView):
     """ View class for home page of site. """
-
     template_name='index.html'
 
     def get_context_data(self, **kwargs):
@@ -31,6 +30,16 @@ class RecipeListView(generic.ListView):
 class RecipeDetailView(generic.DetailView):
     """ Generic detail view for displaying individual recipes. """
     model = Recipe
+
+class MyRecipesListView(LoginRequiredMixin, generic.ListView):
+    """ Generic list view for a user's submitted recipes. """
+    model = Recipe
+    template_name = 'recipes/my_recipes_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        self.user = self.request.user
+        return Recipe.objects.filter(author=self.request.user)
 
 
 """********************** CUSTOM MIXINS ****************************"""

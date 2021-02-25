@@ -4,7 +4,7 @@
   <h1>COOKERY BOOKERY</h1> 
   <br>
 
-  <h2>All Recipes</h2>
+  <h2>My Recipes</h2>
   {% if recipe_list %}
   <ul>
     {% for recipe in recipe_list %}
@@ -14,6 +14,7 @@
     {% endfor %}
   </ul>
   {% else %}
-    <p>No recipes available :(</p>
+    <br>
+    <p>You haven't submitted any recipes yet!</p>
   {% endif %} 
 {% endblock %}

@@ -17,8 +17,11 @@
     <input type="submit" action="" value="Yes, delete." />
   </form>    
 
-  <p><strong>Servings:</strong> {{ recipe.servings }}</p>
-
+  <p><b>Servings:</b> {{ recipe.servings }}</p>
+  {% if recipe.nota_bene %}
+    <p><b>N.B.</b></p> 
+      <p>{{ recipe.nota_bene }}</p>
+  {% endif %}
 
   <h3>Ingredients</h3>
   <ul>
