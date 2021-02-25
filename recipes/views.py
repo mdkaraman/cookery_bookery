@@ -5,7 +5,7 @@ from recipes.models import Recipe, Ingredient, Instruction
 from django.views import generic
 from .forms import RecipeForm, IngredientForm, InstructionForm
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -15,7 +15,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 class IndexView(generic.TemplateView):
     """ View class for home page of site. """
-
     template_name='index.html'
 
     def get_context_data(self, **kwargs):
@@ -32,6 +31,16 @@ class RecipeDetailView(generic.DetailView):
     """ Generic detail view for displaying individual recipes. """
     model = Recipe
 
+class MyRecipesListView(LoginRequiredMixin, generic.ListView):
+    """ Generic list view for a user's submitted recipes. """
+    model = Recipe
+    template_name = 'recipes/my_recipes_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        self.user = self.request.user
+        return Recipe.objects.filter(author=self.request.user)
+
 
 """********************** CUSTOM MIXINS ****************************"""
 
@@ -41,11 +50,12 @@ class CustomCreateMixin:
     def dispatch(self, request, *args, **kwargs):
         path = request.path
         if 'ingredient' in path or 'instruction' in path:
-            # Gets the associated recipe if this is an ingredient or instruction view 
+            # This is an ingredient/instruction view, so get the recipe 
             self.recipe = get_object_or_404(Recipe, pk=kwargs['pk'])
         else:
-            # Sets the recipe to None if this is a recipe view (Recipe model has no 'recipe' field!)
-            self.recipe = None
+            # This is a recipe view, so get the user
+            self.user = request.user
+            self.recipe = None       
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -55,8 +65,13 @@ class CustomCreateMixin:
         return context
 
     def form_valid(self, form):
-        # Set the recipe field on the form and save
-        form.instance.recipe = self.recipe
+        if self.recipe:
+            # Set the recipe field on the ingredient/instruction form
+            form.instance.recipe = self.recipe
+        else:
+            # Set the owner field on the recipe form
+            form.instance.author = self.user
+
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
     
@@ -116,6 +131,10 @@ class RecipeUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Recipe
     fields = ['name', 'servings', 'nota_bene']
 
+class RecipeDeleteView(LoginRequiredMixin, DeleteView):
+    model = Recipe
+    success_url = reverse_lazy('all-recipes')
+
 class IngredientCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Ingredient
     fields = ['name', 'amount', 'preparation']
@@ -137,4 +156,5 @@ class InstructionUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
  
 class InstructionDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
     model = Instruction
+
    

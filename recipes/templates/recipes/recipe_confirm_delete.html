@@ -9,18 +9,18 @@
   {% if recipe.author %}
     <p>By {{ recipe.author }}</p>
   {% endif %}
-  
-  {% if recipe.author == request.user %}
-    <p>
-      <a href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete Recipe </a>
-    </p>
-  {% endif %}
+
+  <em class='text-danger'>Are you sure you want to delete this recipe?</em>
+
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="submit" action="" value="Yes, delete." />
+  </form>    
 
   <p><b>Servings:</b> {{ recipe.servings }}</p>
-  
   {% if recipe.nota_bene %}
-    <p><b>N.B.</b></p>
-    <p>{{ recipe.nota_bene }}</p>
+    <p><b>N.B.</b></p> 
+      <p>{{ recipe.nota_bene }}</p>
   {% endif %}
 
   <h3>Ingredients</h3>

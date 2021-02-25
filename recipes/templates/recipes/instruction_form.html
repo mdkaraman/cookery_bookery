@@ -9,7 +9,8 @@
   <p><b>Name:</b> {{ recipe.name }}</p>
   <p><b>Servings:</b> {{ recipe.servings }}</p>
   {% if recipe.nota_bene %}
-    <p><b>N.B.</b> {{ recipe.nota_bene }}</p>
+    <p><b>N.B.</b></p> 
+      <p>{{ recipe.nota_bene }}</p>
   {% endif %}
   
   <p><em>Need to change something?</em></p>

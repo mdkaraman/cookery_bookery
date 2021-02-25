@@ -21,6 +21,7 @@
           {% if user.is_authenticated %}
             <li>User: {{ user.get_username }}</li>
             <li><a href="{% url 'user-detail' user.username %}">My Account</a></li>
+            <li><a href="{% url 'my-recipes' user.id %}">My Recipes</a></li>
             <li><a href="{% url 'create-recipe' %}">Submit a Recipe</a></li>
             <li><a href="{% url 'logout'%}">Logout</a></li>
           {% else %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 
 
 class Recipe(models.Model):
@@ -17,6 +18,13 @@ class Recipe(models.Model):
     nota_bene = models.TextField(
         help_text='Add any useful notes, hints or advice for this recipe',
         verbose_name='N.B.', 
+        null=True,
+        blank=True
+        )
+
+    author = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL,
         null=True,
         blank=True
         )
