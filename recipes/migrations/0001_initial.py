@@ -16,38 +16,146 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Enter a name for this recipe', max_length=200)),
-                ('servings', models.PositiveIntegerField(help_text='Enter the number of servings this recipe makes', validators=[django.core.validators.MinValueValidator(1, message='Your recipe needs to make at least 1 serving!')])),
-                ('nota_bene', models.TextField(blank=True, help_text='Add any useful notes, hints or advice for this recipe', null=True, verbose_name='N.B.')),
-                ('owner', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Enter a name for this recipe", max_length=200
+                    ),
+                ),
+                (
+                    "servings",
+                    models.PositiveIntegerField(
+                        help_text="Enter the number of servings this recipe makes",
+                        validators=[
+                            django.core.validators.MinValueValidator(
+                                1,
+                                message="Your recipe needs to make at least 1 serving!",
+                            )
+                        ],
+                    ),
+                ),
+                (
+                    "nota_bene",
+                    models.TextField(
+                        blank=True,
+                        help_text="Add any useful notes, hints or advice for this recipe",
+                        null=True,
+                        verbose_name="N.B.",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Instruction',
+            name="Instruction",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('step_number', models.PositiveIntegerField(help_text='Enter the step number for this instruction (e.g. step 1)', validators=[django.core.validators.MinValueValidator(1, message='Your step numbers should be greater than or equal to 1!')], verbose_name='Step')),
-                ('description', models.TextField(help_text="Describe this step's instructions", verbose_name='Instruction')),
-                ('recipe', models.ForeignKey(help_text='Choose a recipe to add an instruction to', on_delete=django.db.models.deletion.CASCADE, to='recipes.recipe')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "step_number",
+                    models.PositiveIntegerField(
+                        help_text="Enter the step number for this instruction (e.g. step 1)",
+                        validators=[
+                            django.core.validators.MinValueValidator(
+                                1,
+                                message="Your step numbers should be greater than or equal to 1!",
+                            )
+                        ],
+                        verbose_name="Step",
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        help_text="Describe this step's instructions",
+                        verbose_name="Instruction",
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        help_text="Choose a recipe to add an instruction to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="recipes.recipe",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['recipe', 'step_number'],
+                "ordering": ["recipe", "step_number"],
             },
         ),
         migrations.CreateModel(
-            name='Ingredient',
+            name="Ingredient",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Enter the name of an ingredient (e.g. garlic)', max_length=100)),
-                ('amount', models.CharField(help_text='Enter the amount to use (e.g. 1/4 tsp.)', max_length=20)),
-                ('preparation', models.CharField(blank=True, help_text='Describe this ingredient"s preparation (e.g. finely minced) or leave blank', max_length=100, null=True)),
-                ('recipe', models.ForeignKey(help_text='Choose a recipe to add an ingredient to', on_delete=django.db.models.deletion.CASCADE, to='recipes.recipe')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Enter the name of an ingredient (e.g. garlic)",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "amount",
+                    models.CharField(
+                        help_text="Enter the amount to use (e.g. 1/4 tsp.)",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "preparation",
+                    models.CharField(
+                        blank=True,
+                        help_text='Describe this ingredient"s preparation (e.g. finely minced) or leave blank',
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        help_text="Choose a recipe to add an ingredient to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="recipes.recipe",
+                    ),
+                ),
             ],
         ),
     ]

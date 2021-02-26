@@ -5,14 +5,16 @@ from .models import Recipe, Ingredient, Instruction
 class RecipeForm(ModelForm):
     class Meta:
         model = Recipe
-        fields = ['name', 'servings', 'nota_bene']
+        fields = ["name", "servings", "nota_bene"]
+
 
 class IngredientForm(ModelForm):
-    class Meta: 
+    class Meta:
         model = Ingredient
-        fields = ['name', 'amount', 'preparation']
+        fields = ["name", "amount", "preparation"]
+
 
 class InstructionForm(ModelForm):
     class Meta:
         model = Instruction
-        fields = ['step_number', 'description']
+        fields = ["step_number", "description"]

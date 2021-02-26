@@ -11,9 +11,13 @@
   {% endif %}
   
   {% if recipe.author == request.user %}
-    <p>
-      <a href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete Recipe </a>
-    </p>
+    <p><strong><em>Author Options:</em></strong></p>
+    <ul>
+      <li>
+        <a href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete Recipe </a>
+      </li>
+    </ul>  
+
   {% endif %}
 
   <p><b>Servings:</b> {{ recipe.servings }}</p>

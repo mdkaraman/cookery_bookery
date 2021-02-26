@@ -10,11 +10,20 @@ class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=200)
 
     def clean(self):
-        email = self.cleaned_data.get('email')
+        email = self.cleaned_data.get("email")
         if User.objects.filter(email=email).exists():
-            raise ValidationError(_("This email address belongs to an existing account! Enter a new email."))
+            raise ValidationError(
+                _(
+                    "This email address belongs to an existing account! Enter a new email."
+                )
+            )
         return self.cleaned_data
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', )
+        fields = (
+            "username",
+            "email",
+            "password1",
+            "password2",
+        )
