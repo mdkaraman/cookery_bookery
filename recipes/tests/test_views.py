@@ -1,16 +1,9 @@
-from django.test import TestCase, RequestFactory
+from django.core.exceptions import ObjectDoesNotExist
+from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
+
 from recipes.models import Recipe, Ingredient, Instruction
-
-from recipes.views import CustomCreateMixin
-from recipes.views import CustomUpdateOrDeleteMixin
-from recipes.views import CustomUpdateMixin, CustomDeleteMixin
-
-from django.views.generic import View
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.http import HttpResponse
-
 
 class IndexViewTest(TestCase):
     @classmethod
@@ -195,54 +188,348 @@ class RecipeCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "recipes/recipe_form.html")
 
+    def test_recipe_object_created_and_fields_are_accurate(self):
+        user = User.objects.get(pk=1)
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        response = self.client.post(
+            reverse("create-recipe"),
+            {
+                "name": "Pizza",
+                "servings": "8",
+                "author": "test_user1",
+            },
+        )
+        # Check that the new record exists and each field has the correct data
+        recipe = Recipe.objects.get(pk=1)
+        self.assertTrue(recipe)
+        self.assertEqual(recipe.name, "Pizza")
+        self.assertEqual(recipe.servings, 8)
+        self.assertEqual(recipe.nota_bene, "")
+        self.assertEqual(recipe.author, user)
 
-class CustomCreateMixinTest(TestCase):
 
-    factory = RequestFactory()
-
-    @classmethod
+class IngredientCreateViewTest(TestCase):
     def setUp(self):
+        # Create test user and recipe
+        test_user1 = User.objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK"
+        )
+        test_user1.save()
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("add-ingredient", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response, "/accounts/login/?next=/recipes/submit-recipe/1/add-ingredient"
+        )
+
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        response = self.client.get(reverse("add-ingredient", kwargs={"pk": 1}))
+        self.assertEqual(str(response.context["user"]), "testuser1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/ingredient_form.html")
+
+    def test_ingredient_object_created_and_fields_are_accurate(self):
+        user = User.objects.get(pk=1)
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        recipe = Recipe.objects.get(pk=1)
+        response = self.client.post(
+            reverse("add-ingredient", kwargs={"pk": 1}),
+            {
+                "recipe": recipe,
+                "name": "Mozzarella",
+                "amount": "12 oz.",
+                "preparation": "shredded",
+            },
+        )
+        # Check that the new record exists and each field has the correct data
+        ingredient = Ingredient.objects.get(pk=1)
+        self.assertTrue(ingredient)
+        self.assertEqual(ingredient.recipe, recipe)
+        self.assertEqual(ingredient.name, "Mozzarella")
+        self.assertEqual(ingredient.amount, "12 oz.")
+        self.assertEqual(ingredient.preparation, "shredded")
+
+
+class InstructionCreateViewTest(TestCase):
+    def setUp(self):
+        # Create test user and recipe
+        test_user1 = User.objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK"
+        )
+        test_user1.save()
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("add-instruction", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response, "/accounts/login/?next=/recipes/submit-recipe/1/add-instruction"
+        )
+
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        response = self.client.get(reverse("add-instruction", kwargs={"pk": 1}))
+        self.assertEqual(str(response.context["user"]), "testuser1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/instruction_form.html")
+
+    def test_ingredient_object_created_and_fields_are_accurate(self):
+        user = User.objects.get(pk=1)
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        recipe = Recipe.objects.get(pk=1)
+        response = self.client.post(
+            reverse("add-instruction", kwargs={"pk": 1}),
+            {
+                "recipe": recipe,
+                "step_number": "1",
+                "description": "Knead the dough.",
+            },
+        )
+        # Check that the new record exists and each field has the correct data
+        instruction = Instruction.objects.get(pk=1)
+        self.assertTrue(instruction)
+        self.assertEqual(instruction.recipe, recipe)
+        self.assertEqual(instruction.step_number, 1)
+        self.assertEqual(instruction.description, "Knead the dough.")
+
+
+class RecipeUpdateViewTest(TestCase):
+    def setUp(self):
+        # Create test user, recipe and ingredient
         test_user1 = User.objects.create_user(
             username="testuser1", password="1X<ISRUkw+tuK"
         )
         test_user1.save()
 
-        recipe = Recipe.objects.create(name="Pizza", servings=8)
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+        ingredient = Ingredient.objects.create(
+            recipe=recipe, name="Dough", amount="12 oz."
+        )
 
-    def test_custom_create_mixin(self):
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("update-recipe", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response, "/accounts/login/?next=/recipes/submit-recipe/1/update_recipe"
+        )
 
-        # Create a dummy view to hold the mixin
-        class AView(CustomCreateMixin, CreateView):
-            # Return an empty response
-            def get(self, request, *args, **kwargs):
-                return HttpResponse()
-
-        view = AView.as_view()
-
-        # self.factory.path = '/recipes/submit-recipe/1/add-ingredient'
-        user = User.objects.filter(username="test_user1")
-        request = self.factory.get("/recipes/submit-recipe/create")
-        request.user = user
-        response = view(request)
-
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        # Use hard-coded url since the view relies on the 'next' query parameter
+        response = self.client.get(
+            "/recipes/submit-recipe/1/update_recipe?next=/recipes/submit-recipe/1/add-ingredient"
+        )
+        self.assertEqual(str(response.context["user"]), "testuser1")
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/recipe_form.html")
+
+    def test_recipe_fields_update_accurately(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        user = User.objects.get(pk=1)
+        # Use hard-coded url since the view relies on the 'next' query parameter
+        response = self.client.post(
+            "/recipes/submit-recipe/1/update_recipe?next=/recipes/submit-recipe/1/add-ingredient",
+            {
+                "name": "Pepperoni Pizza",
+                "servings": "10",
+                "nota_bene": "Spicy!",
+                "author": "test_user1",
+            },
+        )
+        recipe = Recipe.objects.get(pk=1)
+        self.assertEqual(recipe.name, "Pepperoni Pizza")
+        self.assertEqual(recipe.servings, 10)
+        self.assertEqual(recipe.nota_bene, "Spicy!")
+        self.assertEqual(recipe.author, user)
 
 
-"""
-    class DummyRecipeCreateView(CustomCreateMixin, CreateView):
-        model = Recipe
-        #fields = ['name', 'servings', 'nota_bene']
-
-
-
-    def setUp(cls):
-        # Create test users
-        test_user1 = User.objects.create_user(username='testuser1', password='1X<ISRUkw+tuK')
-        test_user2 = User.objects.create_user(username='testuser2', password='2HJ1vRV0Z&3iD')
-
+class IngredientUpdateViewTest(TestCase):
+    def setUp(self):
+        # Create test user, recipe and ingredient
+        test_user1 = User.objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK"
+        )
         test_user1.save()
-        test_user2.save()
 
-        # Create recipe
-        recipe = Recipe.objects.create(name='Pasta', servings='4', nota_bene='')
-"""
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+        ingredient = Ingredient.objects.create(
+            recipe=recipe, name="Dough", amount="12 oz."
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("update-ingredient", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response, "/accounts/login/?next=/recipes/submit-recipe/1/update_ingredient"
+        )
+
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        # Use hard-coded url since the view relies on the 'next' query parameter
+        response = self.client.get(
+            "/recipes/submit-recipe/1/update_ingredient?next=/recipes/submit-recipe/1/add-ingredient"
+        )
+        self.assertEqual(str(response.context["user"]), "testuser1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/ingredient_form.html")
+
+    def test_recipe_fields_update_accurately(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        user = User.objects.get(pk=1)
+        # Use hard-coded url since the view relies on the 'next' query parameter
+        response = self.client.post(
+            "/recipes/submit-recipe/1/update_ingredient?next=/recipes/submit-recipe/1/add-ingredient",
+            {
+                "name": "Pizza Dough",
+                "amount": "14 oz.",
+                "preparation": "room temperature",
+            },
+        )
+        recipe = Ingredient.objects.get(pk=1)
+        self.assertEqual(recipe.name, "Pizza Dough")
+        self.assertEqual(recipe.amount, "14 oz.")
+        self.assertEqual(recipe.preparation, "room temperature")
+
+
+class InstructionUpdateViewTest(TestCase):
+    def setUp(self):
+        # Create test user, recipe and instruction
+        test_user1 = User.objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK"
+        )
+        test_user1.save()
+
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+        instruction = Instruction.objects.create(
+            recipe=recipe, step_number=1, description="Preheat the oven."
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("update-instruction", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/recipes/submit-recipe/1/update_instruction",
+        )
+
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        # Use hard-coded url since the view relies on the 'next' query parameter
+        response = self.client.get(
+            "/recipes/submit-recipe/1/update_instruction?next=/recipes/submit-recipe/1/add-instruction"
+        )
+        self.assertEqual(str(response.context["user"]), "testuser1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/instruction_form.html")
+
+    def test_recipe_fields_update_accurately(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        user = User.objects.get(pk=1)
+        # Use hard-coded url since the view relies on the 'next' query parameter
+        response = self.client.post(
+            "/recipes/submit-recipe/1/update_instruction?next=/recipes/submit-recipe/1/add-instruction",
+            {
+                "step_number": "1",
+                "description": "Preheat the oven to 500 degrees Fahrenheit.",
+            },
+        )
+        recipe = Instruction.objects.get(pk=1)
+        self.assertEqual(recipe.step_number, 1)
+        self.assertEqual(
+            recipe.description, "Preheat the oven to 500 degrees Fahrenheit."
+        )
+
+
+def RecipeDeleteViewTest(TestCase):
+    def setUp(self):
+        # Create test user and recipe
+        test_user1 = User.objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK"
+        )
+        test_user1.save()
+
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("delete-recipe", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response, "/accounts/login/?next=/recipes/recipe/1/delete-recipe"
+        )
+
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        response = self.client.get(reverse("delete-recipe"), kwargs={"pk": 1})
+        self.assertEqual(str(response.context["user"]), "testuser1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/recipe_confirm_delete.html")
+
+    def test_deletes_record_successfully(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        user = User.objects.get(pk=1)
+        response = self.client.post(reverse("delete-recipe", kwargs={"pk": 1}))
+        self.assertRaises(ObjectDoesNotExist, Recipe.objects.get, pk=1)
+
+
+def IngredientDeleteViewTest(TestCase):
+    def setUp(self):
+        # Create test user, recipe and ingredient
+        test_user1 = User.objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK"
+        )
+        test_user1.save()
+
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+        ingredient = Ingredient.objects.create(
+            recipe=recipe, name="Dough", amount="12 oz."
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("delete-ingredient", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response, "/accounts/login/?next=/recipes/submit_recipe/1/delete_ingredient"
+        )
+
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        response = self.client.get(reverse("delete-ingredient"), kwargs={"pk": 1})
+        self.assertEqual(str(response.context["user"]), "testuser1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/ingredient_confirm_delete.html")
+
+    def test_deletes_record_successfully(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        user = User.objects.get(pk=1)
+        response = self.client.post(reverse("delete-ingredient", kwargs={"pk": 1}))
+        self.assertRaises(ObjectDoesNotExist, Recipe.objects.get, pk=1)
+
+
+def InstructionDeleteViewTest(TestCase):
+    def setUp(self):
+        # Create test user, recipe and instruction
+        test_user1 = User.objects.create_user(
+            username="testuser1", password="1X<ISRUkw+tuK"
+        )
+        test_user1.save()
+
+        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+        instruction = Instruction.objects.create(
+            recipe=recipe, step_number=1, description="Preheat the oven."
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("delete-instruction", kwargs={"pk": 1}))
+        self.assertRedirects(
+            response,
+            "/accounts/login/?next=/recipes/submit_recipe/1/delete_instruction",
+        )
+
+    def test_logged_in_uses_correct_template(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        response = self.client.get(reverse("delete-instruction"), kwargs={"pk": 1})
+        self.assertEqual(str(response.context["user"]), "testuser1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/instruction_confirm_delete.html")
+
+    def test_deletes_record_successfully(self):
+        login = self.client.login(username="testuser1", password="1X<ISRUkw+tuK")
+        user = User.objects.get(pk=1)
+        response = self.client.post(reverse("delete-instruction", kwargs={"pk": 1}))
+        self.assertRaises(ObjectDoesNotExist, Recipe.objects.get, pk=1)

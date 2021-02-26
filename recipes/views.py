@@ -52,44 +52,45 @@ class MyRecipesListView(LoginRequiredMixin, generic.ListView):
 
 
 class CustomCreateMixin:
-    """ Custom mixin used by CreateViews for Recipe, Ingredient and Instruction models. """
+    """ Custom mixin used by Recipe, Ingredient and Instruction create views. """
 
     def dispatch(self, request, *args, **kwargs):
         path = request.path
-
+        # Assume this is a recipe view
+        self.is_recipe = True
         if "ingredient" in path or "instruction" in path:
-            # This is an ingredient/instruction view, so get the recipe
+            # This is an ingredient or instruction view, so get the recipe
             self.recipe = get_object_or_404(Recipe, pk=kwargs["pk"])
-        else:
-            # This is a recipe view, so get the user
-            self.user = request.user
-            self.recipe = None
+            self.is_recipe = False
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add the recipe as additional context for the template
-        context["recipe"] = self.recipe
+        # Check if this is an ingredient or instruction view
+        if not self.is_recipe:
+            # Add the recipe as additional context for the template
+            context["recipe"] = self.recipe
         return context
 
     def form_valid(self, form):
-        if self.recipe:
+        if self.is_recipe:
+            # Set the owner field on the recipe form
+            form.instance.author = self.request.user
+        else:
             # Set the recipe field on the ingredient/instruction form
             form.instance.recipe = self.recipe
-        else:
-            # Set the owner field on the recipe form
-            form.instance.author = self.user
 
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        # Send user to the appropirate 'add' page based on the type of object that was created
+        # Send user to add ingredient page if a recipe or ingredient was just created
         if isinstance(self.object, Recipe):
             return reverse("add-ingredient", kwargs={"pk": self.object.id})
         elif isinstance(self.object, Ingredient):
             return reverse("add-ingredient", kwargs={"pk": self.object.recipe.id})
         else:
+            # Send user to add instruction page if an instruction was just created
             return reverse("add-instruction", kwargs={"pk": self.object.recipe.id})
 
 
@@ -107,7 +108,7 @@ class CustomUpdateOrDeleteMixin:
 
 
 class CustomUpdateMixin(CustomUpdateOrDeleteMixin):
-    """ Custom mixin used by UpdateViews for Recipe, Ingredient and Instruction models. """
+    """ Custom mixin used by Recipe, Ingredient and Instruction update views. """
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -123,7 +124,7 @@ class CustomUpdateMixin(CustomUpdateOrDeleteMixin):
 
 
 class CustomDeleteMixin(CustomUpdateOrDeleteMixin):
-    """ Custom mixin used by DeleteViews for Recipe, Ingredient and Instruction models. """
+    """ Custom mixin used by Recipe, Ingredient and Instruction delete views. """
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
