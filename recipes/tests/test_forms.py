@@ -1,5 +1,5 @@
 from django.test import SimpleTestCase
-from recipes.forms import RecipeForm, IngredientForm, InstructionForm
+from recipes.forms import IngredientForm, InstructionForm, RecipeForm
 
 
 class RecipeFormTest(SimpleTestCase):

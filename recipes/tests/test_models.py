@@ -1,5 +1,5 @@
 from django.test import TestCase
-from recipes.models import Recipe, Ingredient, Instruction
+from recipes.models import Ingredient, Instruction, Recipe
 
 
 class RecipeModelTest(TestCase):

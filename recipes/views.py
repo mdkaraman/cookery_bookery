@@ -1,16 +1,17 @@
 import re
 
-from django.shortcuts import render
-from recipes.models import Recipe, Ingredient, Instruction
-from django.views import generic
-from .forms import RecipeForm, IngredientForm, InstructionForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import generic
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
+from recipes.models import Ingredient, Instruction, Recipe
+
+from .forms import IngredientForm, InstructionForm, RecipeForm
 
 
 class IndexView(generic.TemplateView):

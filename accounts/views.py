@@ -1,9 +1,10 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
+
 from .forms import SignUpForm
-from django.contrib.auth.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class SignUpView(generic.CreateView):

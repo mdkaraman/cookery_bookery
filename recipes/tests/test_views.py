@@ -1,9 +1,9 @@
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
+from recipes.models import Ingredient, Instruction, Recipe
 
-from recipes.models import Recipe, Ingredient, Instruction
 
 class IndexViewTest(TestCase):
     @classmethod
