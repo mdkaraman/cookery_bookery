@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>COOKERY BOOKERY</h1> 
+  <br>
+
+  <h2>My Favorites</h2>
+  {% if recipe_list %}
+  <ul>
+    {% for recipe in recipe_list %}
+      <li>
+        <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a> - <a href="{% url 'my-favorites' %}?action=remove{{ recipe.id }}" class='text-danger'>Remove</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <br>
+    <p>You don't have any favorite recipes yet!</p>
+  {% endif %} 
+{% endblock %}

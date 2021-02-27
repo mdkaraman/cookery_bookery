@@ -1,11 +1,11 @@
-from django.contrib.auth.models import User
+import accounts.models
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 
 
 class Recipe(models.Model):
-    """Model representing a complete recipe"""
+    """Model representing a complete recipe."""
 
     name = models.CharField(max_length=200, help_text="Enter a name for this recipe")
     servings = models.PositiveIntegerField(
@@ -23,7 +23,8 @@ class Recipe(models.Model):
         blank=True,
     )
 
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    # Use string argument for User model to prevent circular import error
+    author = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         ordering = ["name"]
@@ -62,7 +63,7 @@ class Ingredient(models.Model):
 
 
 class Instruction(models.Model):
-    """Model representing a single instruction in a recipe"""
+    """Model representing a single instruction in a recipe."""
 
     recipe = models.ForeignKey(
         Recipe,

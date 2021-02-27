@@ -36,7 +36,21 @@ class RecipeDetailView(generic.DetailView):
     """ Generic detail view for displaying individual recipes. """
 
     model = Recipe
-
+   
+    def dispatch(self, request, *args, **kwargs):
+        # Check if the recipe should be added to favorites
+        favorite_action = request.GET.get('action')
+        # Get the recipe object and add it to the user's favorites
+        if favorite_action:
+            recipe = self.get_object()
+            self.request.user.favorite_recipes.add(recipe)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Get user's favorite recipes
+        context['favorites'] = self.request.user.favorite_recipes.all()
+        return context
 
 class MyRecipesListView(LoginRequiredMixin, generic.ListView):
     """ Generic list view for a user's submitted recipes. """
@@ -48,6 +62,38 @@ class MyRecipesListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Recipe.objects.filter(author=self.request.user)
 
+class MyFavoritesListView(LoginRequiredMixin, generic.ListView):
+    """ Generic list view for viewing a user's favorite recipes. """
+
+    model = Recipe
+    template_name = "recipes/my_favorites_list.html"
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check if a recipe needs to be removed from favorites
+        remove_action = request.GET.get('action')
+        if remove_action:
+            # Get the recipe and remove it
+            recipe_id = int(re.findall(r"[0-9]+", remove_action)[0])
+            recipe = Recipe.objects.get(id=recipe_id)
+            request.user.favorite_recipes.remove(recipe)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.request.user.favorite_recipes.all()
+    
+class AddMyFavoritesView(LoginRequiredMixin, generic.DetailView):
+    """ Generic detail view for adding a recipe to MyFavorites. """
+    
+    model = Recipe
+    template_name = 'recipes/added_to_my_favorites.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Get the recipe object and add it to the user's favorites
+        recipe = self.get_object()
+        self.request.user.favorite_recipes.add(recipe)
+        self.request.user.save()
+        return super().dispatch(request, *args, **kwargs)
 
 """ ********************* CUSTOM MIXINS *************************** """
 
