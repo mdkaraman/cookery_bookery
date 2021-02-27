@@ -24,7 +24,9 @@ class Recipe(models.Model):
     )
 
     # Use string argument for User model to prevent circular import error
-    author = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
+    author = models.ForeignKey(
+        "accounts.User", on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     class Meta:
         ordering = ["name"]

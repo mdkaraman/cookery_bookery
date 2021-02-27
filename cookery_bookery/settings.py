@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 ]
 
 # Use custom user model from accouts/models.py
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = "accounts.User"
 
 
 MIDDLEWARE = [

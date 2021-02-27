@@ -36,21 +36,22 @@ class RecipeDetailView(generic.DetailView):
     """ Generic detail view for displaying individual recipes. """
 
     model = Recipe
-   
+
     def dispatch(self, request, *args, **kwargs):
         # Check if the recipe should be added to favorites
-        favorite_action = request.GET.get('action')
+        favorite_action = request.GET.get("action")
         # Get the recipe object and add it to the user's favorites
         if favorite_action:
             recipe = self.get_object()
             self.request.user.favorite_recipes.add(recipe)
         return super().dispatch(request, *args, **kwargs)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Get user's favorite recipes
-        context['favorites'] = self.request.user.favorite_recipes.all()
+        context["favorites"] = self.request.user.favorite_recipes.all()
         return context
+
 
 class MyRecipesListView(LoginRequiredMixin, generic.ListView):
     """ Generic list view for a user's submitted recipes. """
@@ -62,6 +63,7 @@ class MyRecipesListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return Recipe.objects.filter(author=self.request.user)
 
+
 class MyFavoritesListView(LoginRequiredMixin, generic.ListView):
     """ Generic list view for viewing a user's favorite recipes. """
 
@@ -71,7 +73,7 @@ class MyFavoritesListView(LoginRequiredMixin, generic.ListView):
 
     def dispatch(self, request, *args, **kwargs):
         # Check if a recipe needs to be removed from favorites
-        remove_action = request.GET.get('action')
+        remove_action = request.GET.get("action")
         if remove_action:
             # Get the recipe and remove it
             recipe_id = int(re.findall(r"[0-9]+", remove_action)[0])
@@ -81,12 +83,13 @@ class MyFavoritesListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return self.request.user.favorite_recipes.all()
-    
+
+
 class AddMyFavoritesView(LoginRequiredMixin, generic.DetailView):
     """ Generic detail view for adding a recipe to MyFavorites. """
-    
+
     model = Recipe
-    template_name = 'recipes/added_to_my_favorites.html'
+    template_name = "recipes/added_to_my_favorites.html"
 
     def dispatch(self, request, *args, **kwargs):
         # Get the recipe object and add it to the user's favorites
@@ -94,6 +97,7 @@ class AddMyFavoritesView(LoginRequiredMixin, generic.DetailView):
         self.request.user.favorite_recipes.add(recipe)
         self.request.user.save()
         return super().dispatch(request, *args, **kwargs)
+
 
 """ ********************* CUSTOM MIXINS *************************** """
 
@@ -165,7 +169,7 @@ class CustomUpdateMixin(CustomUpdateOrDeleteMixin):
         context["pk"] = self.object.id
         # Used by template to render update-specific messages and formatting
         context["update"] = True
-        # Used by ingredient template for maintaining visual consistency with the next page rendered
+        # Used by ingredient template for maintaining visual consistency with next page
         context["instruction_next"] = "instruction" in self.next
         return context
 

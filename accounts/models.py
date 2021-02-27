@@ -5,5 +5,4 @@ from django.db import models
 
 class User(AbstractUser):
     # Use string argument for Recipe model to prevent circular import error
-    favorite_recipes = models.ManyToManyField('recipes.Recipe')
-
+    favorite_recipes = models.ManyToManyField("recipes.Recipe")
