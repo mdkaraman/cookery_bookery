@@ -10,6 +10,14 @@
     <p>By {{ recipe.author }}</p>
   {% endif %}
   
+  {% if user.is_authenticated %}
+    {% if favorites and recipe in favorites  %}
+      <p><em>This recipe is one of your favorites!</em></p>
+    {% else %}
+      <p><a href="{% url 'recipe-detail' recipe.id %}?action=favorite">Add to My Favorites!</a></p>
+    {% endif %}
+  {% endif %}
+
   {% if recipe.author == request.user %}
     <p><strong><em>Author Options:</em></strong></p>
     <ul>

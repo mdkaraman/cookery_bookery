@@ -10,4 +10,7 @@
 <p><b>Username:</b> {{ user.username }}</p>
 <p><b>Email:</b> {{ user.email }}</p>
 <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
+
+<p>{{user.userprofile.favorites}}</p>
+
 {% endblock %}
