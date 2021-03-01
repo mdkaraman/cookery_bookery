@@ -85,20 +85,6 @@ class MyFavoritesListView(LoginRequiredMixin, generic.ListView):
         return self.request.user.favorite_recipes.all()
 
 
-class AddMyFavoritesView(LoginRequiredMixin, generic.DetailView):
-    """ Generic detail view for adding a recipe to MyFavorites. """
-
-    model = Recipe
-    template_name = "recipes/added_to_my_favorites.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        # Get the recipe object and add it to the user's favorites
-        recipe = self.get_object()
-        self.request.user.favorite_recipes.add(recipe)
-        self.request.user.save()
-        return super().dispatch(request, *args, **kwargs)
-
-
 """ ********************* CUSTOM MIXINS *************************** """
 
 
