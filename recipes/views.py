@@ -48,8 +48,9 @@ class RecipeDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get user's favorite recipes
-        context["favorites"] = self.request.user.favorite_recipes.all()
+        if self.request.user.is_authenticated:
+            # Get user's favorite recipes
+            context["favorites"] = self.request.user.favorite_recipes.all()
         return context
 
 

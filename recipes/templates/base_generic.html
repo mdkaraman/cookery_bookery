@@ -4,17 +4,82 @@
   {% block title %}<title>Cookery Bookery</title>{% endblock %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
   <!-- Add additional CSS in static file -->
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'css/styles.css' %}"> -->
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-2">
+
+  <div class="columns is-multiline">
+ 
+
+  <div class="column is-full">
+  <nav class="navbar is-warning" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <div class="column is-vcentered">
+        <h1 class="title is-1 has-text-black" style="font-family:'Playfair Display', serif">COOKERY BOOKERY</h1>
+      </div>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  
+    <div class="navbar-menu">
+
+  
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-primary" href="{% url 'signup' %}">
+              <strong>Sign up</strong>
+            </a>
+            <a class="button is-light" href="{% url 'login'%}?next={{index}}" >
+              Log in
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="column is-full has-background-black"></div>
+</div>
+
+
+
+
+
+
+
+
+ 
+    <div class="column is-2">
       {% block sidebar %}
-        <ul class="sidebar-nav">
+      
+        <aside class="menu is-medium">            
+          <ul class="menu-list">
+             <li><a href="{% url 'index' %}">Home</a></li>
+             <li><a href="{% url 'all-recipes' %}">All Recipes</a></li>
+
+             {% if user.is_authenticated %}
+             <p class="menu-label">User: {{ user.get_username }}</p>
+             <li><a href="{% url 'user-detail' user.username %}">My Account</a></li>
+             <li><a href="{% url 'my-recipes' %}">My Recipes</a></li>
+             <li><a href="{% url 'my-favorites' %}">My Favorites</a></li>
+             <li><a href="{% url 'create-recipe' %}">Submit a Recipe</a></li>
+             <li><a href="{% url 'logout'%}">Logout</a></li>
+             {% endif %}
+
+          </ul>
+       </aside>
+      
+
+
+
+       <!--  <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'all-recipes' %}">All Recipes</a></li>
           <br>
@@ -29,10 +94,11 @@
             <li><a href="{% url 'login'%}?next={{index}}">Login</a></li>
             <li><a href="{% url 'signup' %}">Create an account</a></li>
           {% endif %} 
-        </ul>
+        </ul> -->
+
      {% endblock %}
       </div>
-      <div class="col-sm-10 ">{% block content %}{% endblock %}
+      <div class="column is-8 is-vcentered">{% block content %}{% endblock %}
         
         {% block pagination %}
           {% if is_paginated %}
@@ -54,5 +120,7 @@
       </div>
     </div>
   </div>
+
 </body>
+
 </html>
