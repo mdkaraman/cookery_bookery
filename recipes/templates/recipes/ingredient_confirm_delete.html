@@ -1,36 +1,36 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>COOKERY BOOKERY</h1> 
-<br>
 
-<h2>Submit a Recipe</h2>
+<div class="block" style="font-family:'Playfair Display', serif">
+  <h1 class="title is-1 is-spaced">Submit a Recipe</h1>
 
-  <p><b>Name:</b> {{ recipe.name }}</p>
-  <p><b>Servings:</b> {{ recipe.servings }}</p>
+  <p class="is-size-4"><strong>Name: </strong>{{ recipe.name }}</p>
+  <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
   {% if recipe.nota_bene %}
-    <p><b>N.B.</b></p> 
-      <p>{{ recipe.nota_bene }}</p>
+    <div class="block">
+      <p class="is-size-4"><strong>N.B.</strong></p> 
+      <p class="is-size-5">{{ recipe.nota_bene }}</p>
+    </div>
+  {% else %}
+    <div style="padding: 1%;"></div>
   {% endif %}
   
-  <h3>Ingredients</h3>
+  <h3 class="title is-2" style="padding-bottom: 1%;">
+    Ingredients
+  </h3>  
   
-  <ul>
-    {% for ingredient in recipe.ingredient_set.all %}
-        {% if pk != ingredient.id %}
-            <li>{{ ingredient }}</li>
-        {% else %}
-            <li>{{ ingredient }} - <em class='text-danger'>Are you sure you want to delete this ingredient?</em> <form action="" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.GET.next }}">
-                <input type="submit" action="" value="Yes, delete." />
-              </form></li>
-        {% endif %}
-    {% endfor %} 
+  <ul class="subtitle is-4">
+    <li><strong><em style="color: hsl(348, 86%, 65%);">Are you sure you want to delete this ingredient?</em></strong></li>
+    <li class="is-size-3" style="padding-bottom: 1%;">{{ ingredient.name }}</li>
+    <li>   
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        <input class="button is-danger " type="submit" action="" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" value="Yes, delete." />
+      </form>
+    </li>
   </ul>
-
-  <br>
-  <br>
-  <br>
+</div>
 {% endblock %}
 

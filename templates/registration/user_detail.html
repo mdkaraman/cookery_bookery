@@ -1,16 +1,16 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>COOKERY BOOKERY</h1> 
-<br>
+<div class="block" style="font-family:'Playfair Display', serif">
 
-<h2>My Account</h2>
-<br>
+    <h1 class="title is-1 is-spaced">My Account</h1>
+    <br>
 
-<p><b>Username:</b> {{ user.username }}</p>
-<p><b>Email:</b> {{ user.email }}</p>
-<p><a href="{% url 'password_reset' %}">Reset Password</a></p>
+    <p class="subtitle is-4"><strong>Username:</strong> {{ user.username }}</p>
+    <p class="subtitle is-4"><strong>Email:</strong> {{ user.email }}</p>
 
-<p>{{user.userprofile.favorites}}</p>
 
+    <p class="subtitle is-5"><a href="{% url 'password_reset' %}">Reset Password</a></p>
+
+</div>
 {% endblock %}

@@ -54,7 +54,7 @@ class Ingredient(models.Model):
     )
     preparation = models.CharField(
         max_length=100,
-        help_text='Describe this ingredient"s preparation (e.g. finely minced) or leave blank',
+        help_text="Describe this ingredient's preparation (e.g. finely minced) or leave blank",
         null=True,
         blank=True,
     )

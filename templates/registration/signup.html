@@ -1,37 +1,75 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>COOKERY BOOKERY</h1> 
-  <br>
-  
-  <h2>Create an account</h2>
+<div class="block" style="font-family:'Playfair Display', serif">
+  <div class="column is-8">
+    <div class="box">
+  <h1 class="title is-2">Create an account</h1>
+
   <form method="post">
     {% csrf_token %}
     
     {% if form.errors %}
       {% for field in form %} 
         {% for error in field.errors %}
-          <div class="alert alert-danger">
+          <div class="notification is-danger is-light">
             <strong>{{ error|escape }}</strong>
           </div>
         {% endfor %}
       {% endfor %}
       {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
+        <div class="notification is-danger is-light">
           <strong>{{ error|escape }}</strong>
         </div>
       {% endfor %}   
     {% endif %}
 
+  <!--   <table>
     {% for field in form %}
+    <tr>
+      
       <div class="fieldWrapper">
-        <b>{{ field.label_tag }}</b> {{ field }}
+        <td><p class="subtitle is-5">{{ field.label_tag }}</tp> </td> <td><p>{{ field }}</p></td>
         {% if field.help_text %}
-          <p class="help">{{ field.help_text|safe }}</p>
+          <tr><td><p class="help">{{ field.help_text|safe }}</p></td></tr>
         {% endif %}
       </div>
-    {% endfor %}
+    </tr>
+    {% endfor %} 
+    </table> -->
 
-    <button type="submit">Sign Up</button>
+    <table>
+      <tr>   
+          <td><p class="subtitle is-5">{{ form.username.label_tag }}</p></td>
+          <td>{{ form.username }}</td>
+        </div>
+      </tr>
+      <tr>
+        <div class="fieldWrapper">
+          <td><p class="subtitle is-5">{{ form.email.label_tag }}</p></td>
+          <td>{{ form.email }}</td>
+        </div>
+      </tr>
+      <tr>
+        <div class="fieldWrapper">
+          <td><p class="subtitle is-5">{{ form.password1.label_tag }}</p></td>
+          <td><p>{{ form.password1 }}</p></td>
+        </div>
+      </tr>
+      <tr>
+        <div class="fieldWrapper"></div>
+        <td><p class="subtitle is-5">{{ form.password2.label_tag }}</p></td>
+        <td>{{ form.password2 }}</td>
+      </tr>
+    </table> 
+
+
+
+    <div class="section">
+      <button type="submit" class="button is-black is-medium">Sign Up</button>
+    </div>
   </form>
+  </div>
+  </div>
+</div>
 {% endblock %}

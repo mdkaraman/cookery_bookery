@@ -31,6 +31,13 @@ class RecipeListView(generic.ListView):
     model = Recipe
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            # Get user's favorite recipes
+            context["favorites"] = self.request.user.favorite_recipes.all()
+        return context
+
 
 class RecipeDetailView(generic.DetailView):
     """ Generic detail view for displaying individual recipes. """
@@ -114,6 +121,9 @@ class CustomCreateMixin:
         if self.is_recipe:
             # Set the owner field on the recipe form
             form.instance.author = self.request.user
+            # Guarantee the name starts in uppercase (for proper ordering)
+            uppercase_name = form.instance.name[0].upper() + form.instance.name[1:]
+            form.instance.name = uppercase_name
         else:
             # Set the recipe field on the ingredient/instruction form
             form.instance.recipe = self.recipe
@@ -186,7 +196,7 @@ class RecipeUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
 
 class RecipeDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipe
-    success_url = reverse_lazy("all-recipes")
+    success_url = reverse_lazy("my-recipes")
 
 
 class IngredientCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):

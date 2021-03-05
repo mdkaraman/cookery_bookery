@@ -1,67 +1,92 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>COOKERY BOOKERY</h1> 
-<br>
+<div class="block" style="font-family:'Playfair Display', serif">
+  <h1 class="title is-1 is-spaced">Submit a Recipe</h1>
 
-<h2>Submit a Recipe</h2>
-
-  <p><b>Name:</b> {{ recipe.name }}</p>
-  <p><b>Servings:</b> {{ recipe.servings }}</p>
+  <p class="is-size-4"><strong>Name: </strong>{{ recipe.name }}</p>
+  <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
   {% if recipe.nota_bene %}
-    <p><b>N.B.</b></p> 
-      <p>{{ recipe.nota_bene }}</p>
+    <div class="block">
+      <p class="is-size-4"><strong>N.B.</strong></p> 
+      <p class="is-size-5">{{ recipe.nota_bene }}</p>
+    </div>
   {% endif %}
   
-    <p><em>Need to change something?</em></p>
+  <div class="block">
+    <p class="is-size-5"><strong><em>Need to change something?</em></strong></p>
     {% if update %}
-      <p><em>You need to finish editing this ingredient before you can edit your recipe!</em></p>
+      <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
+        <em>You need to finish editing this ingredient before you can edit your recipe!</em>
+      </p>
     {% else %}
-      <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
+      <p class="is-size-5" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif">
+        <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a>
+      </p>
     {% endif %}
+  </div>
 
-
-  {% if update and instruction_next %}
-    <h3>Ingredients</h3>  
-  {% else %}
-    <h3>Add Ingredients</h3>
-  {% endif %}
-
-
-  <ul>
+  <h2 class="title is-2" style="padding-bottom: 1%;">
+    Ingredients
+  </h2>  
+  <ul class="subtitle is-4">
     {% for ingredient in recipe.ingredient_set.all %}
       {% if pk != ingredient.id %}
-        <li>{{ ingredient }} 
-          {% if not update %} - 
-          <a href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> Edit</a> -
-          <a href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
-          {% endif %}
-        </li>
+          <li>{{ ingredient }} </li>
+        
+          <li style="padding: 1%;">
+            {% if not update %} 
+            <a class="button is-info is-light is-small" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+                edit
+            </a> 
+            <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" class="text-danger"> 
+              delete 
+            </a>
+            {% endif %}
+          </li>
       {% endif %}
     {% endfor %} 
   </ul>
 
-  <form action="" method="post">
-    {% csrf_token %}
+  <div style="padding: 1%;"></div>
 
-    {% if update %}
-      <h4>Edit Ingredient</h4>
-    {% endif %}
-    <table>
-    {{ form.as_table }}
-    </table>
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
-    <input type="submit" value="Add Ingredient">
-  </form>
+  <div class="column is-8">
+    <form action="" method="post">
+      {% csrf_token %}
+      
+      <nav class="panel is-black">   
+        {% if update %}
+          <h4 class="panel-heading title is-4 has-text-white">Edit Ingredient</h4>
+        {% else %}
+          <h4 class="panel-heading title is-4 has-text-white">New Ingredient</h4>
+        {% endif %} 
+
+          <div class="panel-block">
+            <table class="is-size-5">
+              {{ form.as_table }}
+            </table> 
+          </div>
+
+          <div class="panel-block">
+            <div style="padding: 3%;">
+              <input type="hidden" name="next" value="{{ request.GET.next }}">
+              <input type="submit" class="button is-black is-medium" value="Add Ingredient">
+            </div>
+          </div>
+      </nav>
+
+    </form>
+  </div>
 
   {% if recipe %}
   <br>
-    <h4>All done adding ingredients?</h4>
-    <form action='{% url "add-instruction" recipe.id %}' method="get"><button type="submit">Add Instructions</button></form>
+  <div class="block" style="padding: 3%;">
+    <h4 class="title is-3">All done adding ingredients?</h4>
+    <form action='{% url "add-instruction" recipe.id %}' method="get">
+      <button type="submit" class="button is-black is-medium">Add Instructions</button>
+    </form>
+  </div>
   {% endif %}
-  
-  <br>
-  <br>
-  <br>
+</div>
 {% endblock %}
 

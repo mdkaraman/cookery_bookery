@@ -3,37 +3,33 @@
 {% block content %}
 
 <div class="container">
-  
-  <div class="content" style="font-family:'Playfair Display', serif">
-  <p class="title is-3">Cookery (n.) The art or process of preparing food for the table, by dressing, compounding, and the application of heat.</p>
-  <p class="title is-3">Bookery (n.) A collection of books; <em>a library</em>, a bookshop.</p>
-  <br>
-  <p class="subtitle is-4"><em><b>"The tender morsels on the palate melt, And all the force of Cookery is felt."</b></em></p>
-  <br>
-</div> 
+  <div class="content">
+    <p class="title is-3">Cookery (n.) The art or process of preparing food for the table, by dressing, compounding, and the application of heat.</p>
+    <p class="title is-3">Bookery (n.) A collection of books; <em>a library</em>, a bookshop.</p>
+    <br>
+    <!-- 
+    <p class="subtitle is-4"><em><b>"The tender morsels on the palate melt, And all the force of Cookery is felt."</b></em></p>
+    <br> -->
+  </div> 
 </div> 
 
-
-<div class="block" style="border-top-style: solid;"></div>
+<div class="block"></div>
 
 <div class="container">
-  <div style="font-family:'Playfair Display', serif">
-
-    <p class="title is-1">Newly Added Recipes</p>
-
-  {% if newest_recipes%}
-    <ul>
-      
-      {% for recipe in newest_recipes%}
-        <li class="subtitle is-1" style="border-bottom-style: solid; border-bottom-width: thin;">
-          <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
-        </li>
-      {% endfor %}
-      
-    </ul>
-  {% else %}
-    <p>There are no new recipes :(</p>
-  {% endif %}
-</div>
+  <div>
+    
+    <nav class="panel is-black">
+      <p class="panel-heading title is-3 has-text-white">
+        New Recipes
+      </p>
+      {% if newest_recipes%}
+        {% for recipe in newest_recipes%}
+          <p class="subtitle is-3"><a class="panel-block" href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></p>
+        {% endfor %}
+      {% else %}
+        <p class="panel-block subtitle is-3">There are no new recipes :(</p>
+      {% endif %}
+      </nav>
+  </div>
 </div>
 {% endblock %}
