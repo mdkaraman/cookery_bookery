@@ -19,9 +19,9 @@ class IndexView(generic.TemplateView):
 
     template_name = "index.html"
     
-    # Get 10 newest recipes 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Get 10 newest recipes 
         context["newest_recipes"] = Recipe.objects.order_by("-pk")[:10]
         return context
 

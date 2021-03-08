@@ -1,10 +1,23 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="block" style="font-family:'Playfair Display', serif">
+<div class="block">
 
     <h1 class="title is-1 is-spaced">My Account</h1>
     <br>
+
+    {% if 'signup' in request.META.HTTP_REFERER %}
+        <div class="notification">
+            <div class="columns">
+                <div class="column is-11">
+                    <p class="is-size-4"><strong>Success! Welcome to Cookery Bookery.</strong></p>
+                </div>   
+                <div class="column is-1 " id="delete-button">
+                    <a href="{% url 'user-detail' user.username %}"><button class="delete"></button></a>                   
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
     <p class="subtitle is-4"><strong>Username:</strong> {{ user.username }}</p>
     <p class="subtitle is-4"><strong>Email:</strong> {{ user.email }}</p>
