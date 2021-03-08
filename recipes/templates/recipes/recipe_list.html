@@ -3,35 +3,12 @@
 {% block content %}
 <div class="block">
   <h1 class="title is-1 is-spaced">All Recipes</h1>
-  <!-- {% if recipe_list %}
-  <ul>
-    {% for recipe in recipe_list %}
-      <li class="is-size-4" style="border-bottom-style: solid; border-bottom-width: thin;">
-        <div class="section">
-          <nav class="level">
-            <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
-            {% if user.is_authenticated %}
-              {% if favorites and recipe in favorites  %}
-                <div class="level-right">
-                  <div class="level-item">
-                    <span class="tag is-warning is-medium has-text-black"><b>Favorite Recipe!</b></span>
-                  </div>
-                </div>
-              {% endif %}
-            {% endif %}
-          </nav>
-        </div>
-
-       
-      </li>
-    {% endfor %}
-    {% endif %}
-  </ul> -->
+ 
   {% if recipe_list %}
   
   {% for recipe in recipe_list %}
-   <div class="block">
-    <a href="{{ recipe.get_absolute_url }}"> 
+   <!-- <div class="block"> 
+    <a href="{{ recipe.get_absolute_url }}">  
       <nav class="panel is-black">
         <p class="panel-heading is-size-4 has-text-white">  
           {{ recipe.name }} 
@@ -41,13 +18,43 @@
               <span class="icon"><i class="fas fa-heart"></i></span>
             {% endif %}
           {% endif %}
-        
         </p>
     
-        <p class="panel-block is-size-5">{{ recipe.description }}</p>
+        <p class="panel-block is-size-5">
+          {{ recipe.description }}
+        </p>
       </nav>
     </a>
+  </div> -->
+ 
+  <a href="{{ recipe.get_absolute_url }}">  
+  <div class="box" id="boxPanel">      
+      
+    <div class="box" id="boxHeader">
+      <p class="title is-3 has-text-white">
+        {{ recipe.name }}
+        {% if user.is_authenticated %}
+            {% if favorites and recipe in favorites  %}
+              <span class="icon"><i class="fas fa-heart"></i></span>
+            {% endif %}
+          {% endif %}
+      </p>
+      {% if recipe.author %}
+        <p class="subtitle is-5 has-text-white">
+          By {{ recipe.author }}
+        </p>
+      {% endif %}
+    </div>
+    
+    <div class="block" id="boxPadded">
+      <p class="is-size-5">
+        {{ recipe.description }}
+      </p>
+    </div>
   </div>
+</a>
+<br>
+<br>
   {% endfor %}
 
   {% else %}

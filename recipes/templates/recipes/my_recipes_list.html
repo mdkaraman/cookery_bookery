@@ -7,7 +7,8 @@
     {% if recipe_list %}
   
       {% for recipe in recipe_list %}
-       <div class="block">
+      
+       <!-- <div class="block">
         <a href="{{ recipe.get_absolute_url }}"> 
           <nav class="panel is-black">
           
@@ -25,7 +26,37 @@
           </nav>
         </a>
       </div>
-      {% endfor %}
+     -->
+
+      <a href="{{ recipe.get_absolute_url }}">  
+        <div class="box" id="boxPanel">      
+            
+          <div class="box" id="boxHeader">
+            <h1 class="title is-3 has-text-white">
+              {{ recipe.name }}
+              {% if user.is_authenticated %}
+                  {% if favorites and recipe in favorites  %}
+                    <span class="icon"><i class="fas fa-heart"></i></span>
+                  {% endif %}
+                {% endif %}
+            </h1>
+            {% if recipe.author %}
+              <p class="subtitle is-5 has-text-white">
+                By {{ recipe.author }}
+              </p>
+            {% endif %}
+          </div>
+          
+          <div class="block" id="boxPadded">
+            <p class="is-size-5">
+              {{ recipe.description }}
+            </p>
+          </div>
+        </div>
+      </a>
+      <br>
+      <br>
+        {% endfor %}
    
     {% else %}
       <br>

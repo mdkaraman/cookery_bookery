@@ -15,26 +15,21 @@
   {% endif %}
   
   <div class="block">
-    <!-- <p class="is-size-5"><strong><em>Need to change something?</em></strong></p>
-    {% if update %}
-      <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
-        <em>You need to finish editing this instruction before you can edit your recipe!</em>
-      </p>
-    {% else %} -->
       <p class="is-size-5">
-        <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a>
+        <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
+          Edit Recipe
+        </a>
       </p>
-    <!-- {% endif %} -->
   </div>
 
   <h2 class="title is-2" style="padding-bottom: 1%;">
     Ingredients
   </h2>  
-  <ul class="subtitle is-4">
+  <ul class="is-size-4">
     {% for ingredient in recipe.ingredient_set.all %}
         <li>{{ ingredient }} </li>
         
-        <li style="padding: 1%;">
+        <li>
           {% if not update %} 
           <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
               edit
@@ -47,27 +42,19 @@
     {% endfor %} 
   </ul>
 
-  <div class="block">
-    {% if not update %} 
-        <!-- <p class="is-size-5"><strong><em>Forgot to add an ingredient?</em></strong></p> -->
-        <p>
-          <a class="button is-info is-light" href="{% url 'add-ingredient' recipe.id %}">Add Ingredient</a>
-        </p>
-      {% else %}
-        <!-- <p class="is-size-5">
-          <em>Need to add, edit or delete an ingredient?</em>
-        </p>
-        <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
-          <em>You need to finish editing this instruction before you can edit your ingredients!</em>
-        </p> -->
-      {% endif %}
+  <div class="block" id="addIngredientButton">
+    <p>
+      <a class="button is-info is-light" href="{% url 'add-ingredient' recipe.id %}">
+        Add Ingredient
+      </a>
+    </p> 
   </div>
   
   <h2 class="title is-2" style="padding-bottom: 1%;">
     Instructions
   </h2> 
 
-  <ul class="subtitle is-4">
+  <ul class="is-size-4">
     {% for instruction in recipe.instruction_set.all %}
       {% if pk != instruction.id %}
 
@@ -91,6 +78,50 @@
 
 
   <div class="column is-8">
+    <div class="box" id="boxPanel">      
+      
+      <div class="box" id="boxHeader">
+        <h1 class="title is-3 has-text-white">
+          {% if update %}
+            Edit Instruction
+          {% else %}
+            New Instruction
+          {% endif %}
+        </h1>
+      </div>
+      
+      <div class="block" id="boxPadded">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="column is-10">
+            {% for field in form %}
+            <div class="block">
+                <div class="fieldWrapper">
+                  <p>{{ field.label_tag }}
+                  <br> 
+                  {{ field }}
+                  <!-- {% if field.help_text and field.label == 'Instruction' %}
+                    <p class="is-size-5"><em>{{ field.help_text|safe }}</em></p>
+                  {% endif %} -->
+                  </p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="block" id="boxButton">
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <input type="submit" class="button is-black is-medium" 
+              {% if update %} 
+                value="Update Instruction" 
+              {% else %} 
+                value="Create Instruction" 
+              {% endif %}>
+          </div>
+        </form>
+      </div>
+    </div>
+<!--     
     <form action="" method="post">
       {% csrf_token %}
       
@@ -115,11 +146,11 @@
           </div>
       </nav>
 
-    </form>
+    </form> -->
   </div>
 
   {% if recipe %}
-    <div class="block" style="padding: 3%;">
+    <div class="block" id="submitRecipeBlock">
       <h4 class="title is-3">All done adding instructions?</h4>
       <form action='{% url "recipe-detail" recipe.id %}' method="get">
         <button class="button is-large is-black" type="submit">Submit Recipe</button>

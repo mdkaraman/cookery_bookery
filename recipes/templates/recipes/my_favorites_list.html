@@ -6,7 +6,7 @@
   {% if recipe_list %}
 
     {% for recipe in recipe_list %}
-    <div class="block">
+    <!-- <div class="block">
       <a href="{{ recipe.get_absolute_url }}"> 
         <nav class="panel is-black"> 
           <p class="panel-heading is-size-3 has-text-white">
@@ -22,20 +22,34 @@
           <p class="panel-block is-size-5">{{ recipe.description }}</p>
         </nav>
       </a>
-    </div>
- <!--    <li class="is-size-4"> 
-      <div class="section" style="border-bottom-style: solid; border-bottom-width: thin;">  
-        <nav class="level">
-          <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
+    </div> -->
+
+    <a href="{{ recipe.get_absolute_url }}">  
+      <div class="box" id="boxPanel">      
           
-          <div class="level-right" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif">
-            <div class="level-item">
-            <a class="button is-danger is-light" href="{% url 'my-favorites' %}?action=remove{{ recipe.id }}">Remove</a>
-          </div>
+        <div class="box" id="boxHeader">
+          <h1 class="title is-3 has-text-white">
+            {{ recipe.name }}
+                
+            <span class="icon"><i class="fas fa-heart"></i></span>
+         
+          </h1>
+          {% if recipe.author %}
+            <p class="subtitle is-5 has-text-white">
+              By {{ recipe.author }}
+            </p>
+          {% endif %}
         </div>
-        </nav>
+        
+        <div class="block" id="boxPadded">
+          <p class="is-size-5">
+            {{ recipe.description }}
+          </p>
+        </div>
       </div>
-    </li> -->
+    </a>
+    <br>
+    <br>
     {% endfor %}
   
   {% else %}

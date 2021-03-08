@@ -26,7 +26,7 @@
     {% endif %}
 </div>
 
-<h2 class="subtitle is-4">"<em>{{ recipe.description }}"</em></h2>
+<h2 class="subtitle is-4"><em>"{{ recipe.description }}"</em></h2>
 
 <!--   <div class="block is-size-5"> 
   {% if user.is_authenticated %}
@@ -62,22 +62,21 @@
   </div>
 
   <div class="block">
-    <h2 class="title is-2" style="padding-bottom: 1%;">
+    <h2 class="title is-2">
       Instructions
     </h2> 
-
-    <ul class="subtitle is-4">
+    <div class="content is-size-4">
       {% for instruction in recipe.instruction_set.all %}
-        <li><strong>Step {{ instruction.step_number }}</strong></li>
-        <li>{{ instruction.description }} </li>
+        <p><strong>Step {{ instruction.step_number }}</strong></p>
+        <p>{{ instruction.description }}</p> 
       {% endfor %} 
-    </ul>
+    </div>
   </div>
 
 
     {% if user.is_authenticated %}
       {% if user.username == recipe.author.username %}
-          <br>
+       
           <a class="button is-danger is-light" href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
             Delete Recipe 
           </a>

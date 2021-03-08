@@ -14,10 +14,7 @@
       {% endif %}
     </h1>
   </div>
-  <h2 class="subtitle is-5">"<em>{{ recipe.description }}"</em></h2>
-
-
-  <!-- <p class="is-size-4"><strong>Name: </strong>{{ recipe.name }}</p> -->
+  <h2 class="subtitle is-5"><em>"{{ recipe.description }}"</em></h2>
   
   <div class="block"></div>
   <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
@@ -29,27 +26,22 @@
   {% endif %}
 </div>
   <div class="block">
-    <!-- <p class="is-size-5"><strong><em>Need to change something?</em></strong></p> -->
-    {% if update %}
-      <!-- <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
-        <em>You need to finish editing this ingredient before you can edit your recipe!</em>
-      </p> -->
-    {% else %}
-      <p class="is-size-5">
-        <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a>
-      </p>
-    {% endif %}
+    <p class="is-size-5">
+      <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
+        Edit Recipe
+      </a>
+    </p>
   </div>
 
-  <h2 class="title is-2" style="padding-bottom: 1%;">
+  <h2 class="title is-2">
     Ingredients
   </h2>  
-  <ul class="subtitle is-4">
+  <ul class="is-size-4">
     {% for ingredient in recipe.ingredient_set.all %}
       {% if pk != ingredient.id %}
           <li>{{ ingredient }} </li>
         
-          <li style="padding: 1%;">
+          <li>
             {% if not update %} 
             <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
                 edit
@@ -63,9 +55,52 @@
     {% endfor %} 
   </ul>
 
-  <div style="padding: 1%;"></div>
-
   <div class="column is-8">
+    <div class="box" id="boxPanel">      
+      
+      <div class="box" id="boxHeader">
+        <h1 class="title is-3 has-text-white">
+          {% if update %}
+            Edit Ingredient
+          {% else %}
+            New Ingredient
+          {% endif %}
+        </h1>
+      </div>
+      
+      <div class="block" id="boxPadded">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="column is-9">
+            {% for field in form %}
+            <div class="block">
+                <div class="fieldWrapper">
+                  <p>{{ field.label_tag }}
+                  <br> 
+                  {{ field }}
+                  {% if field.help_text and field.label == 'Preparation' %}
+                    <p class="is-size-5"><em>{{ field.help_text|safe }}</em></p>
+                  {% endif %}
+                  </p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="block" id="boxButton">
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <input type="submit" class="button is-black is-medium" 
+              {% if update %} 
+                value="Update Ingredient" 
+              {% else %} 
+                value="Create Ingredient" 
+              {% endif %}>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<!--   
     <form action="" method="post">
       {% csrf_token %}
       
@@ -91,7 +126,7 @@
       </nav>
 
     </form>
-  </div>
+  </div> -->
 
   {% if recipe and not update %}
   <br>
