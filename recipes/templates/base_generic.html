@@ -6,26 +6,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Playfair+Display&display=swap" rel="stylesheet">  <script src="https://kit.fontawesome.com/b76f67ab69.js" crossorigin="anonymous"></script> 
   {% load static %}
   <style>
+
+    body {
+      font-family: 'Noto Sans JP', serif;
+    }
+
+    h1, h3, .navbar-brand, .panel-heading {
+      font-family: 'Playfair Display';
+    }
+
     .navbar {
+      background-color: #fee440;
+      box-shadow: 0 0 12px 0 rgba(0,0,0,0.3);
+    }
+
+    .navbar-end .navbar-item a.navbar-link {
+      background-color: #fee440 !important;
+    }
+
+    .navbar-link:after {
+      border-color: black !important;
+    }
+
+    a:hover nav p {
       box-shadow: 0 0 12px 0 rgba(0,0,0,0.4);
     }
 
-    li a:hover {
-      box-shadow: -5px 0 8px 3px hsl(0, 0%, 96%);
+    a span {
+      color: #fee440;
+      padding-left: .5em;
     }
+
+    .fieldWrapper {
+      font-size: 1.5em;
+    }
+
+    #boxPanel {
+      padding: 0 0 1.5em 0;
+    }
+
+    #boxHeader {
+      color: white;
+      background-color: black;
+      box-shadow: 0 0 0 0;
+      border-radius: 6px 6px 0 0;
+      margin-bottom: 0;
+    }
+    
+    #boxPadded {
+      margin: 1em 1.5em 0 1.5em;
+    }
+
+    #lostPassword {
+      padding-top: 1%;
+    }
+
+    #signUpButton {
+      margin: 1em 0 1em .8em;
+    }
+
+
   </style>
 </head>
-<body class="has-navbar-fixed-top" style="font-family:'Playfair Display', serif">
-
-  <div class="columns is-multiline" style="font-family:'Playfair Display', serif">
+<body class="has-navbar-fixed-top">
+  <div class="columns is-multiline">
     <div class="column is-full">
-      <nav class="navbar is-warning is-fixed-top" role="navigation" aria-label="main navigation">
+      <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
           <div class="column is-vcentered">
-            <h1 class="title is-1 has-text-black" >COOKERY BOOKERY</h1>
+            <h1 class="title is-1 has-text-black" >
+              COOKERY BOOKERY
+            </h1>
           </div>
           <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
             <span aria-hidden="true"></span>
@@ -34,7 +88,7 @@
           </a>
         </div>
   
-        <div class="navbar-menu is-active">
+        <div class="navbar-menu">
           <div class="navbar-end">
           
           {% if user.is_authenticated %}
@@ -49,17 +103,6 @@
               <a class="navbar-item" href="{% url 'user-detail' user.username %}">
                 <p class="subtitle is-8">My Account</p>
               </a>
-<!--               
-              <a class="navbar-item" href="{% url 'my-recipes' %}">
-                <p class="subtitle is-8">My Recipes</p>
-              </a>
-              <a class="navbar-item" href="{% url 'my-favorites' %}">
-                <p class="subtitle is-8">My Favorites</p>
-              </a>
-              <a class="navbar-item" href="{% url 'create-recipe' %}">
-                <p class="subtitle is-8">Submit a Recipe</p>
-              </a> -->
-
               <hr class="navbar-divider">
               <a class="navbar-item" href="{% url 'logout'%}">
                 <p class="subtitle is-8">Logout</p>
@@ -91,17 +134,17 @@
   <div class="column is-2" >
     <div style="padding-top: 15%;"></div>  
     {% block sidebar %}
-      <aside class="menu is-medium" style="border-right: 1px solid hsla(0,0%,43.9%,.5); padding-top: 3%; padding-bottom: 2%;"> 
+      <aside class="menu is-medium" style="border-right: 1px solid hsla(0,0%,43.9%,.5); padding-top: 3%; padding-bottom: 2%; padding-right: 8px;"> 
                  
-        <ul class="menu-list is-size-4">
+        <ul class="menu-list ">
           
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'all-recipes' %}">All Recipes</a></li> 
-          {% if user.is_authenticated %}           
+                  
             <li><a href="{% url 'my-recipes' %}">My Recipes</a></li>
             <li><a href="{% url 'my-favorites' %}">My Favorites</a></li>
             <li><a href="{% url 'create-recipe' %}">Submit a Recipe</a></li>
-          {% endif %}           
+          
         </ul>
       </aside>
     {% endblock %}

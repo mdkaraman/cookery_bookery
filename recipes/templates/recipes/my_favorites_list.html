@@ -1,12 +1,29 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="block" style="font-family: 'Playfair Display', serif">
+<div class="block">
   <h1 class="title is-1 is-spaced">My Favorites</h1>
   {% if recipe_list %}
-  <ul>
+
     {% for recipe in recipe_list %}
-    <li class="is-size-4"> 
+    <div class="block">
+      <a href="{{ recipe.get_absolute_url }}"> 
+        <nav class="panel is-black"> 
+          <p class="panel-heading is-size-3 has-text-white">
+            {{ recipe.name }}
+
+            {% if user.is_authenticated %}
+              {% if favorites and recipe in favorites  %}
+                <span class="icon"><i class="fas fa-heart"></i></span>
+              {% endif %}
+            {% endif %}
+          </p>
+          
+          <p class="panel-block is-size-5">{{ recipe.description }}</p>
+        </nav>
+      </a>
+    </div>
+ <!--    <li class="is-size-4"> 
       <div class="section" style="border-bottom-style: solid; border-bottom-width: thin;">  
         <nav class="level">
           <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
@@ -18,9 +35,9 @@
         </div>
         </nav>
       </div>
-    </li>
+    </li> -->
     {% endfor %}
-  </ul>
+  
   {% else %}
     <br>
     <p class="subtitle is-4">You don't have any favorite recipes yet!</p>

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="block" style="font-family:'Playfair Display', serif">
+<div class="block">
   <h1 class="title is-1 is-spaced">Submit a Recipe</h1>
 
   <p class="is-size-4"><strong>Name: </strong>{{ recipe.name }}</p>
@@ -15,16 +15,16 @@
   {% endif %}
   
   <div class="block">
-    <p class="is-size-5"><strong><em>Need to change something?</em></strong></p>
+    <!-- <p class="is-size-5"><strong><em>Need to change something?</em></strong></p>
     {% if update %}
       <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
         <em>You need to finish editing this instruction before you can edit your recipe!</em>
       </p>
-    {% else %}
-      <p class="is-size-5" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif">
+    {% else %} -->
+      <p class="is-size-5">
         <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a>
       </p>
-    {% endif %}
+    <!-- {% endif %} -->
   </div>
 
   <h2 class="title is-2" style="padding-bottom: 1%;">
@@ -36,10 +36,10 @@
         
         <li style="padding: 1%;">
           {% if not update %} 
-          <a class="button is-info is-light is-small" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+          <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
               edit
           </a> 
-          <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" class="text-danger"> 
+          <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
             delete 
           </a>
           {% endif %}
@@ -49,23 +49,23 @@
 
   <div class="block">
     {% if not update %} 
-        <p class="is-size-5"><strong><em>Forgot to add an ingredient?</em></strong></p>
+        <!-- <p class="is-size-5"><strong><em>Forgot to add an ingredient?</em></strong></p> -->
         <p>
-          <a class="button is-info is-light" href="{% url 'add-ingredient' recipe.id %}" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif">Add Ingredient</a>
+          <a class="button is-info is-light" href="{% url 'add-ingredient' recipe.id %}">Add Ingredient</a>
         </p>
       {% else %}
-        <p class="is-size-5">
+        <!-- <p class="is-size-5">
           <em>Need to add, edit or delete an ingredient?</em>
         </p>
         <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
           <em>You need to finish editing this instruction before you can edit your ingredients!</em>
-        </p>
+        </p> -->
       {% endif %}
   </div>
   
-  <h3 class="title is-2" style="padding-bottom: 1%;">
+  <h2 class="title is-2" style="padding-bottom: 1%;">
     Instructions
-  </h3> 
+  </h2> 
 
   <ul class="subtitle is-4">
     {% for instruction in recipe.instruction_set.all %}
@@ -77,10 +77,10 @@
         
           <li style="padding: 1%; padding-bottom: 3%;">
             {% if not update %} 
-            <a class="button is-info is-light is-small" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}"> 
+            <a class="button is-info is-light is-small" href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}"> 
                 edit
             </a> 
-            <a class="button is-danger is-light is-small" href="{% url 'delete-instruction' instruction.id %}?next={{ request.path|urlencode }}" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" class="text-danger"> 
+            <a class="button is-danger is-light is-small" href="{% url 'delete-instruction' instruction.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
               delete 
             </a>
             {% endif %}

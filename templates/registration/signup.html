@@ -1,75 +1,89 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="block" style="font-family:'Playfair Display', serif">
-  <div class="column is-8">
-    <div class="box">
-  <h1 class="title is-2">Create an account</h1>
-
-  <form method="post">
-    {% csrf_token %}
-    
-    {% if form.errors %}
-      {% for field in form %} 
-        {% for error in field.errors %}
+<div class="block">
+  <div class="column is-9">
+    <div class="box" id="boxPanel">
+      <div class="box" id="boxHeader">
+    <h1 class="title is-2 has-text-white">
+      Create an account
+    </h1>
+  </div>
+  <div class="block" id="boxPadded">
+    <form method="post">
+      {% csrf_token %}
+      
+      {% if form.errors %}
+        {% for field in form %} 
+          {% for error in field.errors %}
+            <div class="notification is-danger is-light">
+              <strong>{{ error|escape }}</strong>
+            </div>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
           <div class="notification is-danger is-light">
             <strong>{{ error|escape }}</strong>
           </div>
-        {% endfor %}
-      {% endfor %}
-      {% for error in form.non_field_errors %}
-        <div class="notification is-danger is-light">
-          <strong>{{ error|escape }}</strong>
-        </div>
-      {% endfor %}   
-    {% endif %}
+        {% endfor %}   
+      {% endif %}
 
-  <!--   <table>
-    {% for field in form %}
-    <tr>
-      
-      <div class="fieldWrapper">
-        <td><p class="subtitle is-5">{{ field.label_tag }}</tp> </td> <td><p>{{ field }}</p></td>
-        {% if field.help_text %}
-          <tr><td><p class="help">{{ field.help_text|safe }}</p></td></tr>
-        {% endif %}
+    <!--   <table>
+      {% for field in form %}
+      <tr>
+        
+        <div class="fieldWrapper">
+          <td><p class="subtitle is-5">{{ field.label_tag }}</tp> </td> <td><p>{{ field }}</p></td>
+          {% if field.help_text %}
+            <tr><td><p class="help">{{ field.help_text|safe }}</p></td></tr>
+          {% endif %}
+        </div>
+      </tr>
+      {% endfor %} 
+      </table> -->
+ 
+      <div class="column is-7">
+        
+        <div class="block">
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.username.label_tag }}</p>
+            <p>{{ form.username }}</p>
+          </div>
+        </div>
+        <div class="block">    
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.email.label_tag }}</p>
+            <p>{{ form.email }}</p>
+          </div>
+        </div>
+        <div class="block">
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.password1.label_tag }}</p>
+            <p>{{ form.password1 }}</p>
+          </div>
+        </div>
       </div>
-    </tr>
-    {% endfor %} 
-    </table> -->
-
-    <table>
-      <tr>   
-          <td><p class="subtitle is-5">{{ form.username.label_tag }}</p></td>
-          <td>{{ form.username }}</td>
+      <div class="column is-full">
+        <p>{{ form.password1.help_text|safe }}</p>
+      </div>
+      <div class="column is-7">
+        <div class="block">
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.password2.label_tag }}</p>
+            <p>{{ form.password2 }}</p>
+          </div>
         </div>
-      </tr>
-      <tr>
-        <div class="fieldWrapper">
-          <td><p class="subtitle is-5">{{ form.email.label_tag }}</p></td>
-          <td>{{ form.email }}</td>
-        </div>
-      </tr>
-      <tr>
-        <div class="fieldWrapper">
-          <td><p class="subtitle is-5">{{ form.password1.label_tag }}</p></td>
-          <td><p>{{ form.password1 }}</p></td>
-        </div>
-      </tr>
-      <tr>
-        <div class="fieldWrapper"></div>
-        <td><p class="subtitle is-5">{{ form.password2.label_tag }}</p></td>
-        <td>{{ form.password2 }}</td>
-      </tr>
-    </table> 
-
-
-
-    <div class="section">
-      <button type="submit" class="button is-black is-medium">Sign Up</button>
-    </div>
-  </form>
+      </div>
+ 
+    <div class="block" id="signUpButton">
+        <button type="submit" class="button is-black is-medium">
+          Sign Up
+        </button>
+      </div>
+      </div>
+    </form>
   </div>
+</div>
   </div>
 </div>
 {% endblock %}

@@ -128,5 +128,8 @@ STATIC_URL = "/static/"
 # Redirect to Home URL after login
 LOGIN_REDIRECT_URL = "/"
 
+# Use accounts app as home for login url
+LOGIN_URL = "/accounts/login/"
+
 # Allow for email testing (only in development)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

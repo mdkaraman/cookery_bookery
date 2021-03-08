@@ -18,7 +18,8 @@ class IndexView(generic.TemplateView):
     """ View class for home page of site. """
 
     template_name = "index.html"
-
+    
+    # Get 10 newest recipes 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["newest_recipes"] = Recipe.objects.order_by("-pk")[:10]
@@ -45,12 +46,15 @@ class RecipeDetailView(generic.DetailView):
     model = Recipe
 
     def dispatch(self, request, *args, **kwargs):
-        # Check if the recipe should be added to favorites
-        favorite_action = request.GET.get("action")
-        # Get the recipe object and add it to the user's favorites
-        if favorite_action:
-            recipe = self.get_object()
+        recipe = self.get_object()
+        # Check if an add/remove action is being performed
+        action = request.GET.get("action")
+        if action == "favorite":
+            # Add the recipe to the user's favorites
             self.request.user.favorite_recipes.add(recipe)
+        elif action == "remove":
+            # Remove the recipe from the user's favorites
+            request.user.favorite_recipes.remove(recipe)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -70,6 +74,13 @@ class MyRecipesListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Recipe.objects.filter(author=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            # Get user's favorite recipes
+            context["favorites"] = self.request.user.favorite_recipes.all()
+        return context
 
 
 class MyFavoritesListView(LoginRequiredMixin, generic.ListView):
@@ -186,12 +197,12 @@ class CustomDeleteMixin(CustomUpdateOrDeleteMixin):
 
 class RecipeCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Recipe
-    fields = ["name", "servings", "nota_bene"]
+    form_class = RecipeForm
 
 
 class RecipeUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Recipe
-    fields = ["name", "servings", "nota_bene"]
+    form_class = RecipeForm
 
 
 class RecipeDeleteView(LoginRequiredMixin, DeleteView):
@@ -201,12 +212,12 @@ class RecipeDeleteView(LoginRequiredMixin, DeleteView):
 
 class IngredientCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Ingredient
-    fields = ["name", "amount", "preparation"]
+    form_class = IngredientForm
 
 
 class IngredientUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Ingredient
-    fields = ["name", "amount", "preparation"]
+    form_class = IngredientForm
 
 
 class IngredientDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
@@ -215,12 +226,12 @@ class IngredientDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
 
 class InstructionCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Instruction
-    fields = ["step_number", "description"]
+    form_class = InstructionForm
 
 
 class InstructionUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Instruction
-    fields = ["step_number", "description"]
+    form_class = InstructionForm
 
 
 class InstructionDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):

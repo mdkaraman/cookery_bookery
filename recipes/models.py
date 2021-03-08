@@ -8,6 +8,9 @@ class Recipe(models.Model):
     """Model representing a complete recipe."""
 
     name = models.CharField(max_length=200, help_text="Enter a name for this recipe")
+    description = models.TextField(
+        help_text="Describe your recipe in a single sentence!"
+    )
     servings = models.PositiveIntegerField(
         help_text="Enter the number of servings this recipe makes",
         validators=[
@@ -25,7 +28,10 @@ class Recipe(models.Model):
 
     # Use string argument for User model to prevent circular import error
     author = models.ForeignKey(
-        "accounts.User", on_delete=models.SET_NULL, null=True, blank=True
+        "accounts.User", 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
     )
 
     class Meta:

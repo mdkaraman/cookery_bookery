@@ -1,26 +1,41 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="block" style="font-family:'Playfair Display', serif">
+<div class="block">
   <h1 class="title is-1 is-spaced">Submit a Recipe</h1>
 
-  <p class="is-size-4"><strong>Name: </strong>{{ recipe.name }}</p>
+  <div class="box has-background-black">
+    <h1 class="title is-2 has-text-white">
+      {{ recipe.name }}
+      {% if recipe.author %}
+      <h3 class="subtitle is-5 has-text-white">
+        By {{ recipe.author }}
+      </h3>
+      {% endif %}
+    </h1>
+  </div>
+  <h2 class="subtitle is-5">"<em>{{ recipe.description }}"</em></h2>
+
+
+  <!-- <p class="is-size-4"><strong>Name: </strong>{{ recipe.name }}</p> -->
+  
+  <div class="block"></div>
   <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
   {% if recipe.nota_bene %}
-    <div class="block">
+    
       <p class="is-size-4"><strong>N.B.</strong></p> 
       <p class="is-size-5">{{ recipe.nota_bene }}</p>
-    </div>
+   
   {% endif %}
-  
+</div>
   <div class="block">
-    <p class="is-size-5"><strong><em>Need to change something?</em></strong></p>
+    <!-- <p class="is-size-5"><strong><em>Need to change something?</em></strong></p> -->
     {% if update %}
-      <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
+      <!-- <p class="is-size-5" style="color: hsl(348, 86%, 65%);">
         <em>You need to finish editing this ingredient before you can edit your recipe!</em>
-      </p>
+      </p> -->
     {% else %}
-      <p class="is-size-5" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif">
+      <p class="is-size-5">
         <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a>
       </p>
     {% endif %}
@@ -36,10 +51,10 @@
         
           <li style="padding: 1%;">
             {% if not update %} 
-            <a class="button is-info is-light is-small" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+            <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
                 edit
             </a> 
-            <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" class="text-danger"> 
+            <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
               delete 
             </a>
             {% endif %}
@@ -78,7 +93,7 @@
     </form>
   </div>
 
-  {% if recipe %}
+  {% if recipe and not update %}
   <br>
   <div class="block" style="padding: 3%;">
     <h4 class="title is-3">All done adding ingredients?</h4>

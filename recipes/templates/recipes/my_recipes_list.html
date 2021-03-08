@@ -1,28 +1,32 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="block" style="font-family:'Playfair Display', serif">
+<div class="block">
   <h1 class="title is-1 is-spaced">My Recipes</h1>
 
     {% if recipe_list %}
-    <ul>
+  
       {% for recipe in recipe_list %}
-        <li class="is-size-4" style="border-bottom-style: solid; border-bottom-width: thin;">
-          <div class="section">
-            <nav class="level">
-              <div class="section">
-                <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
-              </div>
-              <div class="level-right" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif">
-                <div class="level-item">
-                  <a class="button is-danger" href="{% url 'delete-recipe' recipe.id %}">Delete</a>
-                </div>
-              </div>
-            </div>
+       <div class="block">
+        <a href="{{ recipe.get_absolute_url }}"> 
+          <nav class="panel is-black">
+          
+            <p class="panel-heading is-size-4 has-text-white">
+              {{ recipe.name }}
+
+              {% if user.is_authenticated %}
+                {% if favorites and recipe in favorites  %}
+                  <span class="icon"><i class="fas fa-heart"></i></span>
+                {% endif %}
+              {% endif %}
+            </p>
+         
+            <p class="panel-block is-size-5">{{ recipe.description }}</p>
           </nav>
-        </li>
+        </a>
+      </div>
       {% endfor %}
-    </ul>
+   
     {% else %}
       <br>
       <p class="subtitle is-4">You haven't submitted any recipes yet!</p>

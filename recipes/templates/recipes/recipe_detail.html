@@ -2,27 +2,41 @@
 
 {% block content %}
 
-<div class="block" style="font-family:'Playfair Display', serif">
-  <h1 class="title is-1">{{ recipe }}</h1>
-  
-  {% if recipe.author %}
-    <h3 class="subtitle is-4">By {{ recipe.author }}</h3>
-  {% endif %}
-  <p class="subtitle">
-    <a class="button is-danger is-light" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
-      Delete Recipe 
-    </a>
-  </p>
+<div class="block">
+  <div class="box has-background-black">
+    
+    <h1 class="title is-1 has-text-white">{{ recipe }}                 
+      {% if user.is_authenticated %}
+      
+        {% if favorites and recipe in favorites %}
+          <a href="{% url 'recipe-detail' recipe.id %}?action=remove">
+            <span class="icon"><i class="fas fa-heart"></i></span>
+          </a>
+        {% else %}
+          <a style="color: black;" href="{% url 'recipe-detail' recipe.id %}?action=favorite">
+          <span class="icon"><i class="far fa-heart"></i></span>
+          </a>
+        {% endif %}
+      
+      {% endif %}
+    </h1> 
 
-  <div class="block is-size-5"> 
+    {% if recipe.author %}
+      <h3 class="subtitle is-4 has-text-white">By {{ recipe.author }}</h3>
+    {% endif %}
+</div>
+
+<h2 class="subtitle is-4">"<em>{{ recipe.description }}"</em></h2>
+
+<!--   <div class="block is-size-5"> 
   {% if user.is_authenticated %}
     {% if favorites and recipe in favorites  %}
-      <span class="tag is-warning is-large has-text-black"><strong>This recipe is one of your favorites!</strong></span>
+      <span class="tag is-warning is-large " style="color: black;"><b>Favorite Recipe!</b></span>
     {% else %}
-      <p><a class="button is-warning has-text-black" href="{% url 'recipe-detail' recipe.id %}?action=favorite"><strong>Add to My Favorites</strong></a></p>
+      <p><a class="button is-warning" style="color: black;" href="{% url 'recipe-detail' recipe.id %}?action=favorite"><b>Add to My Favorites</b></a></p>
     {% endif %}
   {% endif %}
-</div>
+</div> -->
 
   <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
   
@@ -48,9 +62,9 @@
   </div>
 
   <div class="block">
-    <h3 class="title is-2" style="padding-bottom: 1%;">
+    <h2 class="title is-2" style="padding-bottom: 1%;">
       Instructions
-    </h3> 
+    </h2> 
 
     <ul class="subtitle is-4">
       {% for instruction in recipe.instruction_set.all %}
@@ -59,66 +73,18 @@
       {% endfor %} 
     </ul>
   </div>
-</div>
 
 
-<!-- 
-
-  <div class="content">
-  <h1>COOKERY BOOKERY</h1> 
-  <br>
-
-  <h1>{{ recipe.name }}</h1>
-  
-  {% if recipe.author %}
-    <p>By {{ recipe.author }}</p>
-  {% endif %}
-  
-  {% if user.is_authenticated %}
-    {% if favorites and recipe in favorites  %}
-      <p><em>This recipe is one of your favorites!</em></p>
-    {% else %}
-      <p><a href="{% url 'recipe-detail' recipe.id %}?action=favorite">Add to My Favorites!</a></p>
+    {% if user.is_authenticated %}
+      {% if user.username == recipe.author.username %}
+          <br>
+          <a class="button is-danger is-light" href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
+            Delete Recipe 
+          </a>
+ 
+      {% endif %}
     {% endif %}
-  {% endif %}
-
-  {% if recipe.author == request.user %}
-    <p><strong><em>Author Options:</em></strong></p>
-    <ul>
-      <li>
-        <a href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete Recipe </a>
-      </li>
-    </ul>  
-
-  {% endif %}
-
-  <p><b>Servings:</b> {{ recipe.servings }}</p>
-  
-  {% if recipe.nota_bene %}
-    <p><b>N.B.</b></p>
-    <p>{{ recipe.nota_bene }}</p>
-  {% endif %}
-
-  <h3>Ingredients</h3>
-  <ul>
-    {% for ingredient in recipe.ingredient_set.all %}
-      <li>{{ ingredient }}</li>
-    {% endfor %}  
-  </ul>
-
-
-  <br>
-  <h3>Instructions</h3>
-
-  {% for step in recipe.instruction_set.all %}
-    <br>
-    <p><b>Step {{ step.step_number }}</b></p>
-    <p>{{ step.description }}</p>
-  {% endfor %}
-
-
+ 
 </div>
-  <br>
-  <br>
-  <br> -->
+
 {% endblock %}

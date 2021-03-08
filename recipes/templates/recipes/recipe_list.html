@@ -1,9 +1,9 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="block" style="font-family:'Playfair Display', serif">
+<div class="block">
   <h1 class="title is-1 is-spaced">All Recipes</h1>
-  {% if recipe_list %}
+  <!-- {% if recipe_list %}
   <ul>
     {% for recipe in recipe_list %}
       <li class="is-size-4" style="border-bottom-style: solid; border-bottom-width: thin;">
@@ -12,9 +12,9 @@
             <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
             {% if user.is_authenticated %}
               {% if favorites and recipe in favorites  %}
-                <div class="level-right" style="font-family: 'BlinkMacSystemFont', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif">
+                <div class="level-right">
                   <div class="level-item">
-                    <span class="tag is-warning is-medium has-text-black"><strong>Favorite Recipe!</strong></span>
+                    <span class="tag is-warning is-medium has-text-black"><b>Favorite Recipe!</b></span>
                   </div>
                 </div>
               {% endif %}
@@ -25,7 +25,31 @@
        
       </li>
     {% endfor %}
-  </ul>
+    {% endif %}
+  </ul> -->
+  {% if recipe_list %}
+  
+  {% for recipe in recipe_list %}
+   <div class="block">
+    <a href="{{ recipe.get_absolute_url }}"> 
+      <nav class="panel is-black">
+        <p class="panel-heading is-size-4 has-text-white">  
+          {{ recipe.name }} 
+
+          {% if user.is_authenticated %}
+            {% if favorites and recipe in favorites  %}
+              <span class="icon"><i class="fas fa-heart"></i></span>
+            {% endif %}
+          {% endif %}
+        
+        </p>
+    
+        <p class="panel-block is-size-5">{{ recipe.description }}</p>
+      </nav>
+    </a>
+  </div>
+  {% endfor %}
+
   {% else %}
     <p class="subtitle is-4">No recipes available :(</p>
   {% endif %} 
