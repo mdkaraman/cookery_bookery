@@ -1,7 +1,8 @@
 from django.contrib.auth import views
 from django.urls import path
 
-from accounts.forms import LoginForm, CustomPasswordResetForm, CustomSetPasswordForm
+from accounts.forms import (CustomPasswordResetForm, CustomSetPasswordForm,
+                            LoginForm)
 
 from .views import SignUpView, UserDetailView
 
