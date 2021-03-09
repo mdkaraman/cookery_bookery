@@ -9,12 +9,19 @@ from accounts.models import User
 
 from .forms import LoginForm, SignUpForm
 
+from django.contrib.messages.views import SuccessMessageMixin
 
-class SignUpView(generic.CreateView):
+class SignUpView(SuccessMessageMixin, generic.CreateView):
     form_class = SignUpForm
     template_name = "registration/signup.html"
+    success_message = "Success! Welcome to Cookery Bookery."
+
+    def get_success_url(self):
+        username = self.request.POST['username']
+        return reverse_lazy("user-detail", args=[username])
 
     def form_valid(self, form):
+        super().form_valid(form)
         # Save the new user
         form.save()
         # Get the username and password
@@ -23,7 +30,7 @@ class SignUpView(generic.CreateView):
         # Authenticate user then login
         user = authenticate(username=username, password=password)
         login(self.request, user)
-        return HttpResponseRedirect(reverse_lazy("user-detail", args=[username]))
+        return HttpResponseRedirect(self.get_success_url())
 
 class UserDetailView(LoginRequiredMixin, generic.DetailView):
     model = User

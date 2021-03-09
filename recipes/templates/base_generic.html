@@ -8,21 +8,32 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Playfair+Display&display=swap" rel="stylesheet">  <script src="https://kit.fontawesome.com/b76f67ab69.js" crossorigin="anonymous"></script> 
   {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <style>
 
     body {
       font-family: 'Noto Sans JP', serif;
     }
 
-    h1, h3, .navbar-brand, .panel-heading {
-      font-family: 'Playfair Display';
+    a span {
+      color: #fee440;
+      padding-left: .5em;
     }
 
     aside {
       border-right: 1px solid hsla(0,0%,43.9%,.5); 
       padding-top: 3%; 
       padding-bottom: 2%; 
-      padding-right: 8px;
+      padding-right: 3%;
+      margin-top: 15%;
+    }
+
+    h1, h3, .navbar-brand, .panel-heading {
+      font-family: 'Playfair Display';
+    }
+
+    .footer {
+      background-color:white;
     }
 
     .navbar {
@@ -40,11 +51,6 @@
 
     a:hover #boxPanel {
       box-shadow: 0 0 12px 0 rgba(0,0,0,0.4);
-    }
-
-    a span {
-      color: #fee440;
-      padding-left: .5em;
     }
 
     .fieldWrapper {
@@ -97,10 +103,11 @@
 
     #submitRecipeBlock {
       margin-top: 1.75em;
-    }
+    } 
+  </style> 
 
-  </style>
 </head>
+
 <body class="has-navbar-fixed-top">
   <div class="columns is-multiline">
     <div class="column is-full">
@@ -114,123 +121,118 @@
           <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
-           <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
           </a>
         </div>
   
-        <div class="navbar-menu">
-          <div class="navbar-end">
-          
-          {% if user.is_authenticated %}
+        <div class="navbar-end">
+          <div class="navbar-menu">
 
-          <div class="navbar-item has-dropdown is-hoverable">
+            {% if user.is_authenticated %}
+              <div class="navbar-item has-dropdown is-hoverable">
         
-            <a class="navbar-link">
-              <p class="title is-3 has-text-black">{{ user.username }}</p>
-            </a>
-         
-            <div class="navbar-dropdown is-boxed">
-              <a class="navbar-item" href="{% url 'user-detail' user.username %}">
-                <p class="subtitle is-8">My Account</p>
-              </a>
-              <hr class="navbar-divider">
-              <a class="navbar-item" href="{% url 'logout'%}">
-                <p class="subtitle is-8">Logout</p>
-              </a>
+                <a class="navbar-link">
+                  <p class="title is-3 has-text-black">{{ user.username }}</p>
+                </a>
+        
+                <div class="navbar-dropdown is-boxed">
+                  <a class="navbar-item" href="{% url 'user-detail' user.username %}">
+                    <p class="subtitle is-8">My Account</p>
+                  </a>
+                  <hr class="navbar-divider">
+                  <a class="navbar-item" href="{% url 'logout'%}">
+                    <p class="subtitle is-8">Logout</p>
+                  </a>
+                </div>
             </div>
-          </div>
+            {% else %} 
+              <div class="navbar-item">
+                <div class="buttons">
+                  <a class="button is-black" href="{% url 'signup' %}">
+                    <strong>Sign up</strong>
+                  </a>
+                  <a class="button is-light" href="{% url 'login'%}?next={{index}}" >
+                    Log in
+                  </a>
+                </div>
+              </div>
+            {% endif %} 
 
-          {% else %} 
-          <div class="navbar-item">
-            <div class="buttons">
-             <a class="button is-black" href="{% url 'signup' %}">
-                <strong>Sign up</strong>
-              </a>
-              <a class="button is-light" href="{% url 'login'%}?next={{index}}" >
-                Log in
-              </a>
-            </div>
           </div>
-          {% endif %}
-      
         </div>
-      </div>
-    </nav>
-
-  <!--   <div class="column is-full has-background-black"></div> -->
-  </div>
+      </nav>
+    </div>
 
 
-  <div class="column is-2" >
-    <div style="padding-top: 15%;"></div>  
-    {% block sidebar %}
-      <aside class="menu is-medium"> 
-                 
-        <ul class="menu-list ">
-          
-          <li><a href="{% url 'index' %}">Home</a></li>
-          <li><a href="{% url 'all-recipes' %}">All Recipes</a></li> 
-                  
+    <div class="column is-2" >
+      {% block sidebar %}
+        <aside class="menu is-medium">          
+          <ul class="menu-list ">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'all-recipes' %}">All Recipes</a></li>         
             <li><a href="{% url 'my-recipes' %}">My Recipes</a></li>
             <li><a href="{% url 'my-favorites' %}">My Favorites</a></li>
             <li><a href="{% url 'create-recipe' %}">Submit a Recipe</a></li>
-          
-        </ul>
-      </aside>
-    {% endblock %}
-  </div>
+          </ul>
+        </aside>
+      {% endblock %}
+    </div>
     
-<div class="column is-8 is-vcentered">
-  <div class="section">{% block content %}{% endblock %}</div>
+    <div class="column is-8 is-vcentered">
+      <div class="section">{% block content %}{% endblock %}</div>
 
-{% block pagination %}
-  {% if is_paginated %}
-  <div class="block">
-    <nav class="pagination" role="navigation" aria-label="pagination">
-      {% if page_obj.has_previous %}
-      <a class="pagination-previous" href="{{ request.path }}?page={{ page_obj.previous_page_number }}">Previous</a>
-      {% endif %}
-      {% if page_obj.has_next %}
-      <a class="pagination-next" href="{{ request.path }}?page={{ page_obj.next_page_number }}">Next page</a>
-      {% endif %}
-      
-      <ul class="pagination-list">
+      {% block pagination %}
+        {% if is_paginated %}
+          <div class="block">
+            <nav class="pagination" role="navigation" aria-label="pagination">
+              {% if page_obj.has_previous %}
+                <a class="pagination-previous" href="{{ request.path }}?page={{ page_obj.previous_page_number }}">
+                  Previous
+                </a>
+              {% endif %}
+              {% if page_obj.has_next %}
+                <a class="pagination-next" href="{{ request.path }}?page={{ page_obj.next_page_number }}">
+                  Next page
+                </a>
+              {% endif %}
+            
+              <ul class="pagination-list">
+                {% for page in page_obj.paginator %}
+                  {% if page.number <= 3 %}
+                    <li>
+                      <a class="pagination-link" aria-label="Goto page {{ page.number }}" href="{{ request.path }}?page={{ page.number }}">
+                        {{ page.number }}
+                      </a>
+                    </li>
+                  {% endif %}
 
-        {% for page in page_obj.paginator %}
-          {% if page.number <= 3 %}
-            <li>
-              <a class="pagination-link" aria-label="Goto page {{ page.number }}" href="{{ request.path }}?page={{ page.number }}">{{ page.number }}</a>
-            </li>
-          {% endif %}
+                  {% if page.number > 3 %}   
+                    {% if page.number != page_obj.paginator.num_pages%}
+                      <li>
+                        <span class="pagination-ellipsis">&hellip;</span>
+                      </li> 
+                    {% endif %} 
+                  {% endif %}
+                {% endfor %}  
+                
+                {% if page_obj.paginator.num_pages > 3 %}
+                  <li>
+                    <a class="pagination-link" aria-label="Goto page {{ page_obj.paginator.num_pages }}" href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}">
+                      {{ page_obj.paginator.num_pages }}
+                    </a>
+                  </li>
+                {% endif %}        
+              </ul>
+            </nav>
+          </div>
+        {% endif %}
+      {% endblock %}
 
-          {% if page.number > 3 %}   
-              {% if page.number != page_obj.paginator.num_pages%}
-                <li>
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li> 
-            {% endif %} 
-          {% endif %}
-        {% endfor %}  
-        
-        {% if page_obj.paginator.num_pages > 3 %}
-        <li>
-          <a class="pagination-link" aria-label="Goto page {{ page_obj.paginator.num_pages }}" href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
-        </li>
-        {% endif %}        
-      </ul>
-    </nav>
-
+    </div>
   </div>
-
-    {% endif %}
-  {% endblock %}
-</div>
-</div>
-</div>
-
 
 </body>
 
-<footer class="footer" style="background-color:white;"></footer>
+<footer class="footer"></footer>
 
 </html>
