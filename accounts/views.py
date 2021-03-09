@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -9,7 +10,6 @@ from accounts.models import User
 
 from .forms import LoginForm, SignUpForm
 
-from django.contrib.messages.views import SuccessMessageMixin
 
 class SignUpView(SuccessMessageMixin, generic.CreateView):
     form_class = SignUpForm
@@ -17,6 +17,7 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
     success_message = "Success! Welcome to Cookery Bookery."
 
     def get_success_url(self):
+        # Get username from request and pass it to user detail url
         username = self.request.POST['username']
         return reverse_lazy("user-detail", args=[username])
 
@@ -37,4 +38,5 @@ class UserDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = "registration/user_detail.html"
 
     def get_object(self):
+        # Get the authenticated user
         return User.objects.get(username=self.request.user)

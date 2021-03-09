@@ -1,23 +1,10 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
+
 <div class="block">
 
     <h1 class="title is-1 is-spaced">My Account</h1>
-    <br>
-
-    <!-- {% if 'signup' in request.META.HTTP_REFERER %}
-        <div class="notification">
-            <div class="columns">
-                <div class="column is-11">
-                    <p class="is-size-4"><strong>Success! Welcome to Cookery Bookery.</strong></p>
-                </div>   
-                <div class="column is-1 " id="deleteButton">
-                    <a href="{% url 'user-detail' user.username %}"><button class="delete"></button></a>                   
-                </div>
-            </div>
-        </div>
-    {% endif %} -->
 
     {% if messages %} 
         {% for message in messages %}
@@ -37,8 +24,8 @@
     <p class="subtitle is-4"><strong>Username:</strong> {{ user.username }}</p>
     <p class="subtitle is-4"><strong>Email:</strong> {{ user.email }}</p>
 
-
     <p class="subtitle is-5"><a href="{% url 'password_reset' %}">Reset Password</a></p>
 
 </div>
+
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -24,22 +24,12 @@
     {% if recipe.author %}
       <h3 class="subtitle is-4 has-text-white">By {{ recipe.author }}</h3>
     {% endif %}
-</div>
+  </div>
 
-<h2 class="subtitle is-4"><em>"{{ recipe.description }}"</em></h2>
-
-<!--   <div class="block is-size-5"> 
-  {% if user.is_authenticated %}
-    {% if favorites and recipe in favorites  %}
-      <span class="tag is-warning is-large " style="color: black;"><b>Favorite Recipe!</b></span>
-    {% else %}
-      <p><a class="button is-warning" style="color: black;" href="{% url 'recipe-detail' recipe.id %}?action=favorite"><b>Add to My Favorites</b></a></p>
-    {% endif %}
-  {% endif %}
-</div> -->
+  <h2 class="subtitle is-4"><em>"{{ recipe.description }}"</em></h2>
 
   <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
-  
+    
   {% if recipe.nota_bene %}
     <div class="block">
       <p class="is-size-4"><strong>N.B.</strong></p> 
@@ -53,7 +43,7 @@
     <h2 class="title is-2" style="padding-bottom: 1%;">
       Ingredients
     </h2>
-  
+
     <ul class="subtitle is-4">
       {% for ingredient in recipe.ingredient_set.all %}
           <li>{{ ingredient }} </li>
@@ -65,24 +55,23 @@
     <h2 class="title is-2">
       Instructions
     </h2> 
-    <div class="content is-size-4">
+    <div class="content">
       {% for instruction in recipe.instruction_set.all %}
-        <p><strong>Step {{ instruction.step_number }}</strong></p>
-        <p>{{ instruction.description }}</p> 
+        <div class="block">
+          <p class="title is-4"><strong>Step {{ instruction.step_number }}</strong></p>
+          <p class="subtitle is-4">{{ instruction.description }}</p> 
+        </div>
       {% endfor %} 
     </div>
   </div>
 
-
-    {% if user.is_authenticated %}
-      {% if user.username == recipe.author.username %}
-       
-          <a class="button is-danger is-light" href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
-            Delete Recipe 
-          </a>
- 
-      {% endif %}
+  {% if user.is_authenticated %}
+    {% if user.username == recipe.author.username %}
+        <a class="button is-danger is-light" href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
+          Delete Recipe 
+        </a>
     {% endif %}
+  {% endif %}
  
 </div>
 

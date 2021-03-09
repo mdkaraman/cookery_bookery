@@ -1,8 +1,8 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
-<div class="container">
+<div class="block">
   <div class="content">
     <p class="title is-3">Cookery (n.) The art or process of preparing food for the table, by dressing, compounding, and the application of heat.</p>
     <p class="title is-3">Bookery (n.) A collection of books; <em>a library</em>, a bookshop.</p>
@@ -10,9 +10,7 @@
   </div> 
 </div> 
 
-<div class="block"></div>
-
-<div class="container">
+<div class="block">
     <nav class="panel is-black">
       <p class="panel-heading title is-3 has-text-white">
         New Recipes
@@ -24,6 +22,7 @@
       {% else %}
         <p class="panel-block subtitle is-3">There are no new recipes :(</p>
       {% endif %}
-      </nav>
+    </nav>
 </div>
+
 {% endblock %}

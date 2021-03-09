@@ -1,12 +1,15 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
+
 <div class="block">
   <div class="column is-5">  
     <div class="box" id="boxPanel">      
       
       <div class="box" id="boxHeader">
-        <h1 class="title is-2 has-text-white">User Login</h1>
+        <h1 class="title is-2 has-text-white">
+          User Login
+        </h1>
       </div>
       
       <div class="block" id="boxPadded">
@@ -35,7 +38,6 @@
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
 
-      {# Assumes you setup the password_reset view in your URLconf #}
         <p id="lostPassword">
           <a href="{% url 'password_reset' %}">Lost password?</a>
         </p>
@@ -44,4 +46,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}
