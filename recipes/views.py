@@ -8,6 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from num2words import num2words
 
 from recipes.models import Ingredient, Instruction, Recipe
 
@@ -18,12 +19,12 @@ class IndexView(generic.TemplateView):
     """ View class for home page of site. """
 
     template_name = "index.html"
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Get 9 newest recipes
         newest_recipes = list(Recipe.objects.order_by("-pk")[:9])
-        
+
         for recipe in newest_recipes:
             # A description is too long for the display box if it is over 100 chars
             if len(recipe.description) > 100:
@@ -35,8 +36,8 @@ class IndexView(generic.TemplateView):
         for i in range(len(newest_recipes)):
             if i % 3 == 0:
                 # Add the recipes in lists of 3 for template rendering purposes
-                context["newest_recipes"].append(newest_recipes[i:i+3])
-        
+                context["newest_recipes"].append(newest_recipes[i : i + 3])
+
         return context
 
 
@@ -73,6 +74,8 @@ class RecipeDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Convert servings (int) to uppercase english word (string)
+        context["servings_as_word"] = num2words(self.object.servings).upper()
         if self.request.user.is_authenticated:
             # Get user's favorite recipes
             context["favorites"] = self.request.user.favorite_recipes.all()
@@ -140,6 +143,8 @@ class CustomCreateMixin:
         if not self.is_recipe:
             # Add the recipe as additional context for the template
             context["recipe"] = self.recipe
+            # Convert servings (int) to uppercase english word (string)
+            context["servings_as_word"] = num2words(self.recipe.servings).upper()
         return context
 
     def form_valid(self, form):

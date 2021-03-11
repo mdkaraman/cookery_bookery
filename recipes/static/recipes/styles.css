@@ -1,114 +1,119 @@
 body {
-    font-family: 'Noto Sans JP', serif;
-  }
+  font-family: 'Noto Sans JP', serif;
+}
 
-  a span {
-    color: #fee440;
-    padding-left: .5em;
-  }
+a span {
+  color: #fee440;
+  padding-left: .5em;
+}
 
-  aside {
-    border-right: 1px solid hsla(0,0%,43.9%,.5); 
-    margin-top: 15%;
-    padding-top: 3%; 
-    padding-bottom: 2%; 
-    padding-right: 3%;
-  }
+aside {
+  border-right: 1px solid hsla(0,0%,43.9%,.5); 
+  margin-top: 15%;
+  padding-top: 3%; 
+  padding-bottom: 2%; 
+  padding-right: 3%;
+}
 
-  h1, h3, .navbar-brand, .panel-heading {
-    font-family: 'Playfair Display';
-  }
+h1, h3, .navbar-brand, .panel-heading {
+  font-family: 'Playfair Display';
+}
 
-  table {
-    width: 100%;
-  }
+table {
+  width: 100%;
+}
 
-  td {
-    width: 33%;
-  }
+td {
+  width: 33%;
+}
 
-  .footer {
-    background-color:white;
-  }
+.fieldWrapper {
+  font-size: 1.5em;
+}
 
-  .navbar {
-    background-color: #fee440;
-    box-shadow: 0 0 12px 0 rgba(0,0,0,0.3);
-  }
+.footer {
+  background-color:white;
+}
 
-  .navbar-end .navbar-item a.navbar-link {
-    background-color: #fee440 !important;
-  }
+.navbar {
+  background-color: #fee440;
+  box-shadow: 0 0 12px 0 rgba(0,0,0,0.3);
+}
 
-  .navbar-link:after {
-    border-color: black !important;
-  }
+.navbar-end .navbar-item a.navbar-link {
+  background-color: #fee440 !important;
+}
 
-  a:hover #boxPanel {
-    box-shadow: 0 0 12px 0 rgba(0,0,0,0.4);
-  }
+.navbar-link:after {
+  border-color: black !important;
+}
 
-  .fieldWrapper {
-    font-size: 1.5em;
-  }
+.tag {
+  color: black !important;
+  background-color: #fee440 !important;
+}
 
-  #boxPanel {
-    padding: 0 0 1.5em 0;
-  }
+a:hover #boxPanel {
+  box-shadow: 0 0 12px 0 rgba(0,0,0,0.4);
+}
 
-  #boxHeader {
-    color: white;  
-    background-color: black;
-    border-radius: 6px 6px 0 0;
-    box-shadow: 0 0 0 0;
-    font-family: 'Playfair Display';
-    margin-bottom: 0;
-  }
-  
-  #boxPadded {
-    margin: 1em 1.5em 0 1.5em;
-  }
+#boxPanel {
+  padding: 0 0 1.5em 0;
+}
 
-  #lostPassword {
-    padding-top: 1%;
-  }
+#boxHeader {
+  color: white;  
+  background-color: black;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 0 0 0;
+  font-family: 'Playfair Display';
+  margin-bottom: 0;
+}
 
-  #boxButton {
-    margin: 1em 0 1em .8em;
-  }
+#boxPadded {
+  margin: 1em 1.5em 0 1.5em;
+}
 
-  .notification {
-    color: white;
-    background-color: black;
-    padding-right: 0;
-  }
+#lostPassword {
+  padding-top: 1%;
+}
 
-  #deleteButton {
-    margin-bottom: 0;
-    margin-top: 0;
-    padding-bottom: 0;
-    padding-right: 0;
-    padding-top: 0;
-    text-align: center;
-  }
+#boxButton {
+  margin: 1em 0 1em .8em;
+}
 
-  #addIngredientButton {
-    margin-top: 1em;
-  }
+.notification {
+  color: white;
+  background-color: black;
+  padding-right: 0;
+}
 
-  #danger {
-    color: hsl(348, 86%, 65%);
-  }
+#deleteButton {
+  margin-bottom: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  padding-top: 0;
+  text-align: center;
+}
 
-  #panelBlockText {
-    font-size: 2em;
-  }
+#addIngredientButton {
+  margin-top: 1em;
+}
 
-  #ingredientsTitle {
-    margin-bottom: 0;
-  }
+#danger {
+  color: hsl(348, 86%, 65%);
+}
 
-  #newRecipeBlock {
-    height: 10em;
-    margin: 1em 1.5em 0 1.5em;
-  }
+#panelBlockText {
+  font-size: 2em;
+}
+
+#ingredientsTitle {
+  margin-bottom: 0;
+}
+
+#newRecipeBlock {
+  height: 10em;
+  margin: 1em 1.5em 0 1.5em;
+}

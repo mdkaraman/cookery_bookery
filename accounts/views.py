@@ -18,7 +18,7 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
 
     def get_success_url(self):
         # Get username from request and pass it to user detail url
-        username = self.request.POST['username']
+        username = self.request.POST["username"]
         return reverse_lazy("user-detail", args=[username])
 
     def form_valid(self, form):
@@ -26,12 +26,13 @@ class SignUpView(SuccessMessageMixin, generic.CreateView):
         # Save the new user
         form.save()
         # Get the username and password
-        username = self.request.POST['username']
-        password = self.request.POST['password1']
+        username = self.request.POST["username"]
+        password = self.request.POST["password1"]
         # Authenticate user then login
         user = authenticate(username=username, password=password)
         login(self.request, user)
         return HttpResponseRedirect(self.get_success_url())
+
 
 class UserDetailView(LoginRequiredMixin, generic.DetailView):
     model = User

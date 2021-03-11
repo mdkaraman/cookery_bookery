@@ -22,9 +22,11 @@
     Ingredients
   </h3>  
   
-  <p class="is-size-4"><strong><em id="danger">Are you sure you want to delete this ingredient?</em></strong></p>
-  <p class="is-size-4">{{ ingredient.name }}</p>
-  <br>
+  <div class="block">
+    <p class="is-size-4"><strong><em id="danger">Are you sure you want to delete this ingredient?</em></strong></p>
+    <p class="is-size-4">{{ ingredient.name }}</p>
+  </div>
+
   <form action="" method="POST">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ request.GET.next }}">

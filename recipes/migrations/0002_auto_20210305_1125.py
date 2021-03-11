@@ -6,19 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0001_initial'),
+        ("recipes", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='description',
-            field=models.TextField(default='A new recipe worth trying!', help_text='Describe your recipe in a single sentence!'),
+            model_name="recipe",
+            name="description",
+            field=models.TextField(
+                default="A new recipe worth trying!",
+                help_text="Describe your recipe in a single sentence!",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='ingredient',
-            name='preparation',
-            field=models.CharField(blank=True, help_text="Describe this ingredient's preparation (e.g. finely minced) or leave blank", max_length=100, null=True),
+            model_name="ingredient",
+            name="preparation",
+            field=models.CharField(
+                blank=True,
+                help_text="Describe this ingredient's preparation (e.g. finely minced) or leave blank",
+                max_length=100,
+                null=True,
+            ),
         ),
     ]

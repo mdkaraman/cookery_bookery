@@ -13,7 +13,7 @@
             <span class="icon"><i class="fas fa-heart"></i></span>
           </a>
         {% else %}
-          <a style="color: black;" href="{% url 'recipe-detail' recipe.id %}?action=favorite">
+          <a href="{% url 'recipe-detail' recipe.id %}?action=favorite">
           <span class="icon"><i class="far fa-heart"></i></span>
           </a>
         {% endif %}
@@ -28,7 +28,11 @@
 
   <h2 class="subtitle is-4"><em>"{{ recipe.description }}"</em></h2>
 
-  <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
+  <div class="block">
+    <span class="tag is-large" >
+      SERVES {{ servings_as_word }}
+    </span>
+  </div>
     
   {% if recipe.nota_bene %}
     <div class="block">
@@ -36,7 +40,7 @@
       <p class="is-size-5">{{ recipe.nota_bene }}</p>
     </div>
   {% else %}
-    <div style="padding: 1%;"></div>
+    
   {% endif %}
 
   <div class="block">  

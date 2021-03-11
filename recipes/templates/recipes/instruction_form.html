@@ -18,8 +18,13 @@
 
   <h2 class="subtitle is-5"><em>"{{ recipe.description }}"</em></h2>
   
+  <div class="block">
+    <span class="tag is-large" >
+      SERVES {{ servings_as_word }}
+    </span>
+  </div>
+
   <div class="block"></div>
-  <p class="is-size-4"><strong>Servings:</strong> {{ recipe.servings }}</p>
   {% if recipe.nota_bene %}
     <p class="is-size-4"><strong>N.B.</strong></p> 
     <p class="is-size-5">{{ recipe.nota_bene }}</p>
