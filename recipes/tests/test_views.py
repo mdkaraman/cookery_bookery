@@ -26,16 +26,20 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "index.html")
 
-    def test_displays_ten_most_recent_recipes(self):
+    def test_displays_nine_most_recent_recipes(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("newest_recipes" in response.context)
 
-        # Check that 10 recipes are in the template's context
-        self.assertTrue(len(response.context["newest_recipes"]) == 10)
+        # Flatten the context variable's list of lists
+        newest_recipes = response.context["newest_recipes"]
+        flattened_list = [recipe for triplet in newest_recipes for recipe in triplet]
+
+        # Check that 9 recipes are in the flattened list
+        self.assertTrue(len(flattened_list) == 9)
 
         # Check that recipes are listed newest to oldest
-        newest_recipes = response.context["newest_recipes"]
+        newest_recipes = flattened_list
         recipe_id = 15
         for recipe in newest_recipes:
             self.assertTrue(recipe.id == recipe_id)
@@ -178,7 +182,7 @@ class RecipeCreateViewTest(TestCase):
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("create-recipe"))
         self.assertRedirects(
-            response, "/accounts/login/?next=/recipes/submit-recipe/create"
+            response, "/accounts/login/?next=/recipes/submit-recipe/create/"
         )
 
     def test_logged_in_uses_correct_template(self):
@@ -195,6 +199,7 @@ class RecipeCreateViewTest(TestCase):
             reverse("create-recipe"),
             {
                 "name": "Pizza",
+                "description": "So good you can put anchovies on it.",
                 "servings": "8",
                 "author": "test_user1",
             },
@@ -203,6 +208,7 @@ class RecipeCreateViewTest(TestCase):
         recipe = Recipe.objects.get(pk=1)
         self.assertTrue(recipe)
         self.assertEqual(recipe.name, "Pizza")
+        self.assertEqual(recipe.description, "So good you can put anchovies on it.")
         self.assertEqual(recipe.servings, 8)
         self.assertEqual(recipe.nota_bene, "")
         self.assertEqual(recipe.author, user)
@@ -302,7 +308,12 @@ class RecipeUpdateViewTest(TestCase):
         )
         test_user1.save()
 
-        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+        recipe = Recipe.objects.create(
+            name="Pizza",
+            description="So good you can put anchovies on it.",
+            servings=8,
+            author=test_user1,
+        )
         ingredient = Ingredient.objects.create(
             recipe=recipe, name="Dough", amount="12 oz."
         )
@@ -331,6 +342,7 @@ class RecipeUpdateViewTest(TestCase):
             "/recipes/submit-recipe/1/update_recipe?next=/recipes/submit-recipe/1/add-ingredient",
             {
                 "name": "Pepperoni Pizza",
+                "description": "But it's better with pepperoni!",
                 "servings": "10",
                 "nota_bene": "Spicy!",
                 "author": "test_user1",
@@ -338,6 +350,7 @@ class RecipeUpdateViewTest(TestCase):
         )
         recipe = Recipe.objects.get(pk=1)
         self.assertEqual(recipe.name, "Pepperoni Pizza")
+        self.assertEqual(recipe.description, "But it's better with pepperoni!")
         self.assertEqual(recipe.servings, 10)
         self.assertEqual(recipe.nota_bene, "Spicy!")
         self.assertEqual(recipe.author, user)

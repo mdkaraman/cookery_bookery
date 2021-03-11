@@ -22,11 +22,17 @@ class RecipeFormTest(SimpleTestCase):
         )
 
     def test_recipe_form_servings_must_be_one_or_more(self):
-        form = RecipeForm(data={"name": "Pasta", "servings": -1})
+        form = RecipeForm(
+            data={"name": "Pasta", "description": "Mama Mia!", "servings": -1}
+        )
         self.assertFalse(form.is_valid())
-        form = RecipeForm(data={"name": "Pasta", "servings": 0})
+        form = RecipeForm(
+            data={"name": "Pasta", "description": "Mama Mia!", "servings": 0}
+        )
         self.assertFalse(form.is_valid())
-        form = RecipeForm(data={"name": "Pasta", "servings": 1})
+        form = RecipeForm(
+            data={"name": "Pasta", "description": "Mama Mia!", "servings": 1}
+        )
         self.assertTrue(form.is_valid())
 
 
@@ -48,7 +54,7 @@ class IngredientFormTest(SimpleTestCase):
         form = IngredientForm()
         self.assertEqual(
             form.fields["preparation"].help_text,
-            'Describe this ingredient"s preparation (e.g. finely minced) or leave blank',
+            "Describe this ingredient's preparation (e.g. finely minced) or leave blank",
         )
 
 
