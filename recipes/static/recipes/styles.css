@@ -9,14 +9,22 @@ body {
 
   aside {
     border-right: 1px solid hsla(0,0%,43.9%,.5); 
+    margin-top: 15%;
     padding-top: 3%; 
     padding-bottom: 2%; 
     padding-right: 3%;
-    margin-top: 15%;
   }
 
   h1, h3, .navbar-brand, .panel-heading {
     font-family: 'Playfair Display';
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td {
+    width: 33%;
   }
 
   .footer {
@@ -49,11 +57,11 @@ body {
   }
 
   #boxHeader {
-    font-family: 'Playfair Display';
-    color: white;
+    color: white;  
     background-color: black;
-    box-shadow: 0 0 0 0;
     border-radius: 6px 6px 0 0;
+    box-shadow: 0 0 0 0;
+    font-family: 'Playfair Display';
     margin-bottom: 0;
   }
   
@@ -76,22 +84,31 @@ body {
   }
 
   #deleteButton {
-    text-align: center;
-    margin-top: 0;
     margin-bottom: 0;
-    padding-top: 0;
-    padding-right: 0;
+    margin-top: 0;
     padding-bottom: 0;
+    padding-right: 0;
+    padding-top: 0;
+    text-align: center;
   }
 
   #addIngredientButton {
     margin-top: 1em;
   }
 
-  #submitRecipeBlock {
-    margin-top: 1.75em;
-  } 
-
   #danger {
     color: hsl(348, 86%, 65%);
+  }
+
+  #panelBlockText {
+    font-size: 2em;
+  }
+
+  #ingredientsTitle {
+    margin-bottom: 0;
+  }
+
+  #newRecipeBlock {
+    height: 10em;
+    margin: 1em 1.5em 0 1.5em;
   }

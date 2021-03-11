@@ -40,22 +40,23 @@
   {% endif %}
 
   <div class="block">  
-    <h2 class="title is-2" style="padding-bottom: 1%;">
+    <h2 class="title is-2" id="ingredientsTitle">
       Ingredients
     </h2>
-
-    <ul class="subtitle is-4">
-      {% for ingredient in recipe.ingredient_set.all %}
-          <li>{{ ingredient }} </li>
-      {% endfor %} 
-    </ul>
+    <div class="column is-10">
+      <ul class="subtitle is-4">
+        {% for ingredient in recipe.ingredient_set.all %}
+            <li>{{ ingredient }}</li>
+        {% endfor %} 
+      </ul>
+    </div>
   </div>
 
   <div class="block">
     <h2 class="title is-2">
       Instructions
     </h2> 
-    <div class="content">
+    <div class="column is-10">
       {% for instruction in recipe.instruction_set.all %}
         <div class="block">
           <p class="title is-4"><strong>Step {{ instruction.step_number }}</strong></p>

@@ -37,27 +37,29 @@
   </p>
 </div>
 
-<h2 class="title is-2">
+<h2 class="title is-2" id="ingredientsTitle">
   Ingredients
 </h2>  
-<ul class="is-size-4">
-  {% for ingredient in recipe.ingredient_set.all %}
-    {% if pk != ingredient.id %}
-        <li>{{ ingredient }} </li>
-      
-        <li>
-          {% if not update %} 
-          <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
-              edit
-          </a> 
-          <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
-            delete 
-          </a>
-          {% endif %}
-        </li>
-    {% endif %}
-  {% endfor %} 
-</ul>
+<div class="column is-10">
+  <ul class="is-size-4">
+    {% for ingredient in recipe.ingredient_set.all %}
+      {% if pk != ingredient.id %}
+          <li>{{ ingredient }} </li>
+        
+          <li>
+            {% if not update %} 
+            <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+                edit
+            </a> 
+            <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
+              delete 
+            </a>
+            {% endif %}
+          </li>
+      {% endif %}
+    {% endfor %} 
+  </ul>
+</div>
 
 <div class="column is-8">
   <div class="box" id="boxPanel">      
@@ -108,7 +110,8 @@
 
 {% if recipe and not update %}
 <br>
-<div class="block" style="padding: 3%;">
+<br>
+<div class="block">
   <h4 class="title is-3">All done adding ingredients?</h4>
   <form action='{% url "add-instruction" recipe.id %}' method="get">
     <button type="submit" class="button is-black is-medium">Add Instructions</button>

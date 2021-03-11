@@ -10,19 +10,57 @@
   </div> 
 </div> 
 
-<div class="block">
-    <nav class="panel is-black">
-      <p class="panel-heading title is-3 has-text-white">
-        New Recipes
-      </p>
-      {% if newest_recipes%}
-        {% for recipe in newest_recipes%}
-          <p class="subtitle is-3"><a class="panel-block" href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></p>
-        {% endfor %}
-      {% else %}
-        <p class="panel-block subtitle is-3">There are no new recipes :(</p>
-      {% endif %}
-    </nav>
+<!-- This closing tag closes the section-class div tag located in base.html -->
 </div>
+
+<div class="box has-background-black">
+  <h1 class="title is-1 has-text-white"> Latest Recipes </h1>
+</div>
+
+<table>
+  {% if newest_recipes %}
+    {% for recipe_triplet in newest_recipes %}
+      <tr>
+        {% for recipe in recipe_triplet %}
+          <td>
+            <div class="column">
+              <a href="{{ recipe.get_absolute_url }}">  
+                <div class="box" id="boxPanel">      
+                  
+                  <div class="box" id="boxHeader">
+                    <p class="title is-3 has-text-white">
+                      {{ recipe.name }}
+                      {% if user.is_authenticated %}
+                          {% if favorites and recipe in favorites  %}
+                            <span class="icon"><i class="fas fa-heart"></i></span>
+                          {% endif %}
+                        {% endif %}
+                    </p>
+                    {% if recipe.author %}
+                      <p class="subtitle is-5 has-text-white">
+                        By {{ recipe.author }}
+                      </p>
+                    {% endif %}
+                  </div>
+              
+                  <div class="block" id="newRecipeBlock">
+                    <p class="is-size-5">
+                      {{ recipe.description }}
+                    </p> 
+                  </div>
+                </div>
+              </a>
+          </div>
+          </td>
+        {% endfor %}
+
+      </tr>
+
+    {% endfor %}
+  {% else %}
+    <br>
+    <p class="subtitle is-4">There are no new recipes :(</p>
+{% endif %}
+</table>
 
 {% endblock %}

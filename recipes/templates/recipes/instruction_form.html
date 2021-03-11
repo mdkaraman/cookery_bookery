@@ -34,25 +34,27 @@
     </p>
 </div>
 
-<h2 class="title is-2" style="padding-bottom: 1%;">
+<h2 class="title is-2" id="ingredientsTitle">
   Ingredients
 </h2>  
-<ul class="is-size-4">
-  {% for ingredient in recipe.ingredient_set.all %}
-      <li>{{ ingredient }} </li>
-      
-      <li>
-        {% if not update %} 
-        <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
-            edit
-        </a> 
-        <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
-          delete 
-        </a>
-        {% endif %}
-      </li> 
-  {% endfor %} 
-</ul>
+<div class="column is-10">
+  <ul class="is-size-4">
+    {% for ingredient in recipe.ingredient_set.all %}
+        <li>{{ ingredient }} </li>
+        
+        <li>
+          {% if not update %} 
+          <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+              edit
+          </a> 
+          <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
+            delete 
+          </a>
+          {% endif %}
+        </li> 
+    {% endfor %} 
+  </ul>
+</div>
 
 <div class="block" id="addIngredientButton">
   <p>
@@ -66,15 +68,15 @@
   Instructions
 </h2> 
 
-<ul class="is-size-4">
+<div class="column is-10">
   {% for instruction in recipe.instruction_set.all %}
-    {% if pk != instruction.id %}
+    {% if instruction.id != pk %}
+      <div class="block">
+        <p class="is-size-4"><strong>Step {{ instruction.step_number }}</strong></p>
 
-        <li><strong>Step {{ instruction.step_number }}</strong></li>
-
-        <li>{{ instruction.description }} </li>
+        <p class="is-size-4">{{ instruction.description }} </p>
       
-        <li style="padding: 1%; padding-bottom: 3%;">
+        <p>
           {% if not update %} 
           <a class="button is-info is-light is-small" href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}"> 
               edit
@@ -83,10 +85,11 @@
             delete 
           </a>
           {% endif %}
-        </li>
-    {% endif %}
+        </p>
+      </div>
+      {% endif %}
   {% endfor %} 
-</ul>
+</div>
 
 
 <div class="column is-8">
@@ -134,7 +137,8 @@
 
 {% if recipe %}
   <br>
-  <div class="block" id="submitRecipeBlock">
+  <br>
+  <div class="block" >
     <h4 class="title is-3">All done adding instructions?</h4>
     <form action='{% url "recipe-detail" recipe.id %}' method="get">
       <button class="button is-large is-black" type="submit">Submit Recipe</button>

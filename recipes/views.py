@@ -21,8 +21,22 @@ class IndexView(generic.TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get 10 newest recipes 
-        context["newest_recipes"] = Recipe.objects.order_by("-pk")[:10]
+        # Get 9 newest recipes
+        newest_recipes = list(Recipe.objects.order_by("-pk")[:9])
+        
+        for recipe in newest_recipes:
+            # A description is too long for the display box if it is over 100 chars
+            if len(recipe.description) > 100:
+                # Truncate the long description and add ellipsis
+                recipe.description = recipe.description[:99] + "..."
+
+        # Prepare the context variable for the new recipes list
+        context["newest_recipes"] = []
+        for i in range(len(newest_recipes)):
+            if i % 3 == 0:
+                # Add the recipes in lists of 3 for template rendering purposes
+                context["newest_recipes"].append(newest_recipes[i:i+3])
+        
         return context
 
 
