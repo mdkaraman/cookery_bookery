@@ -1,16 +1,31 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1>COOKERY BOOKERY</h1> 
-<br>
 
-<h2>My Account</h2>
-<br>
+<div class="block">
 
-<p><b>Username:</b> {{ user.username }}</p>
-<p><b>Email:</b> {{ user.email }}</p>
-<p><a href="{% url 'password_reset' %}">Reset Password</a></p>
+    <h1 class="title is-1 is-spaced">My Account</h1>
 
-<p>{{user.userprofile.favorites}}</p>
+    {% if messages %} 
+        {% for message in messages %}
+        <div class="notification">
+            <div class="columns">
+                <div class="column is-11">
+                    <p class="is-size-4"><strong>{{ message|safe }}</strong></p>
+                </div>   
+                <div class="column is-1 " id="deleteButton">
+                    <a href="{% url 'user-detail' user.username %}"><button class="delete"></button></a>                   
+                </div>
+            </div>
+        </div>
+        {% endfor %}   
+    {% endif %}
+
+    <p class="subtitle is-4"><strong>Username:</strong> {{ user.username }}</p>
+    <p class="subtitle is-4"><strong>Email:</strong> {{ user.email }}</p>
+
+    <p class="subtitle is-5"><a href="{% url 'password_reset' %}">Reset Password</a></p>
+
+</div>
 
 {% endblock %}

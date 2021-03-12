@@ -1,20 +1,46 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>COOKERY BOOKERY</h1> 
-  <br>
+<div class="block">
+  <h1 class="title is-1 is-spaced">My Recipes</h1>
 
-  <h2>My Recipes</h2>
-  {% if recipe_list %}
-  <ul>
-    {% for recipe in recipe_list %}
-      <li>
-        <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
-      </li>
-    {% endfor %}
-  </ul>
-  {% else %}
-    <br>
-    <p>You haven't submitted any recipes yet!</p>
-  {% endif %} 
+    {% if recipe_list %}
+  
+      {% for recipe in recipe_list %}
+        <a href="{{ recipe.get_absolute_url }}">  
+          <div class="box" id="boxPanel">      
+              
+            <div class="box" id="boxHeader">
+              <h1 class="title is-3 has-text-white">
+                {{ recipe.name }}
+                {% if user.is_authenticated %}
+                    {% if favorites and recipe in favorites  %}
+                      <span class="icon"><i class="fas fa-heart"></i></span>
+                    {% endif %}
+                  {% endif %}
+              </h1>
+              {% if recipe.author %}
+                <p class="subtitle is-5 has-text-white">
+                  By {{ recipe.author }}
+                </p>
+              {% endif %}
+            </div>
+            
+            <div class="block" id="boxPadded">
+              <p class="is-size-5">
+                {{ recipe.description }}
+              </p>
+            </div>
+          </div>
+        </a>
+        <br>
+        <br>
+      {% endfor %}
+   
+    {% else %}
+      <br>
+      <p class="subtitle is-4">You haven't submitted any recipes yet!</p>
+    {% endif %} 
+
+</div>
 {% endblock %}

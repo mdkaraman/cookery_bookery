@@ -8,6 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from num2words import num2words
 
 from recipes.models import Ingredient, Instruction, Recipe
 
@@ -21,7 +22,31 @@ class IndexView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["newest_recipes"] = Recipe.objects.order_by("-pk")[:10]
+        # Get 10 newest recipes
+        newest_recipes = list(Recipe.objects.order_by("-pk")[:10])
+        # Use variable for last index in case there are less than 10 recipes
+        max_index = len(newest_recipes) - 1
+
+        if newest_recipes and max_index >= 5:
+            # Sort the recipes by description length
+            newest_recipes.sort(key=lambda r: len(r.description))
+            # The template expects the longest description to be loaded 5th
+            newest_recipes[max_index], newest_recipes[4] = (
+                newest_recipes[4],
+                newest_recipes[max_index],
+            )
+            # Ignore the longest description recipe
+            temp = newest_recipes[:4] + newest_recipes[5:]
+            # Get the recipe with the longest title and where it occurs in the list
+            longest_title = max(temp, key=lambda r: len(r.name))
+            index = newest_recipes.index(longest_title)
+            # The template expects the longest title to be loaded 3rd
+            newest_recipes[index], newest_recipes[2] = (
+                newest_recipes[2],
+                newest_recipes[index],
+            )
+
+        context["newest_recipes"] = newest_recipes
         return context
 
 
@@ -31,6 +56,13 @@ class RecipeListView(generic.ListView):
     model = Recipe
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            # Get user's favorite recipes
+            context["favorites"] = self.request.user.favorite_recipes.all()
+        return context
+
 
 class RecipeDetailView(generic.DetailView):
     """ Generic detail view for displaying individual recipes. """
@@ -38,12 +70,15 @@ class RecipeDetailView(generic.DetailView):
     model = Recipe
 
     def dispatch(self, request, *args, **kwargs):
-        # Check if the recipe should be added to favorites
-        favorite_action = request.GET.get("action")
-        # Get the recipe object and add it to the user's favorites
-        if favorite_action:
-            recipe = self.get_object()
+        recipe = self.get_object()
+        # Check if an add/remove action is being performed
+        action = request.GET.get("action")
+        if action == "favorite":
+            # Add the recipe to the user's favorites
             self.request.user.favorite_recipes.add(recipe)
+        elif action == "remove":
+            # Remove the recipe from the user's favorites
+            request.user.favorite_recipes.remove(recipe)
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -65,6 +100,13 @@ class MyRecipesListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Recipe.objects.filter(author=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            # Get user's favorite recipes
+            context["favorites"] = self.request.user.favorite_recipes.all()
+        return context
 
 
 class MyFavoritesListView(LoginRequiredMixin, generic.ListView):
@@ -110,12 +152,17 @@ class CustomCreateMixin:
         if not self.is_recipe:
             # Add the recipe as additional context for the template
             context["recipe"] = self.recipe
+            # Convert servings (int) to uppercase english word (string)
+            context["servings_as_word"] = num2words(self.recipe.servings).upper()
         return context
 
     def form_valid(self, form):
         if self.is_recipe:
             # Set the owner field on the recipe form
             form.instance.author = self.request.user
+            # Guarantee the name starts in uppercase (for proper ordering)
+            uppercase_name = form.instance.name[0].upper() + form.instance.name[1:]
+            form.instance.name = uppercase_name
         else:
             # Set the recipe field on the ingredient/instruction form
             form.instance.recipe = self.recipe
@@ -178,27 +225,27 @@ class CustomDeleteMixin(CustomUpdateOrDeleteMixin):
 
 class RecipeCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Recipe
-    fields = ["name", "servings", "nota_bene"]
+    form_class = RecipeForm
 
 
 class RecipeUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Recipe
-    fields = ["name", "servings", "nota_bene"]
+    form_class = RecipeForm
 
 
 class RecipeDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipe
-    success_url = reverse_lazy("all-recipes")
+    success_url = reverse_lazy("my-recipes")
 
 
 class IngredientCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Ingredient
-    fields = ["name", "amount", "preparation"]
+    form_class = IngredientForm
 
 
 class IngredientUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Ingredient
-    fields = ["name", "amount", "preparation"]
+    form_class = IngredientForm
 
 
 class IngredientDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
@@ -207,12 +254,12 @@ class IngredientDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):
 
 class InstructionCreate(LoginRequiredMixin, CustomCreateMixin, CreateView):
     model = Instruction
-    fields = ["step_number", "description"]
+    form_class = InstructionForm
 
 
 class InstructionUpdate(LoginRequiredMixin, CustomUpdateMixin, UpdateView):
     model = Instruction
-    fields = ["step_number", "description"]
+    form_class = InstructionForm
 
 
 class InstructionDelete(LoginRequiredMixin, CustomDeleteMixin, DeleteView):

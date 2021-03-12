@@ -1,46 +1,24 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>COOKERY BOOKERY</h1> 
-  <br>
 
-  <h1>{{ recipe.name }}</h1>
-  
-  {% if recipe.author %}
-    <p>By {{ recipe.author }}</p>
-  {% endif %}
+<div class="block">
+  <div class="box has-background-black">
+    <h1 class="title is-1 has-text-white">{{ recipe }}</h1>
+    {% if recipe.author %}
+      <h3 class="subtitle is-4 has-text-white">By {{ recipe.author }}</h3>
+    {% endif %}
+  </div>
 
-  <em class='text-danger'>Are you sure you want to delete this recipe?</em>
+  <div class="block">
+    <p class="is-size-4">
+      <strong><em id="danger">Are you sure you want to delete this recipe?</em></strong>
+    </p>
+  </div>
 
   <form action="" method="POST">
     {% csrf_token %}
-    <input type="submit" action="" value="Yes, delete." />
-  </form>    
+    <input class="button is-danger" type="submit" action="" value="Yes, delete." />
+  </form> 
 
-  <p><b>Servings:</b> {{ recipe.servings }}</p>
-  {% if recipe.nota_bene %}
-    <p><b>N.B.</b></p> 
-      <p>{{ recipe.nota_bene }}</p>
-  {% endif %}
-
-  <h3>Ingredients</h3>
-  <ul>
-    {% for ingredient in recipe.ingredient_set.all %}
-      <li>{{ ingredient }}</li>
-    {% endfor %}  
-  </ul>
-
-
-  <br>
-  <h3>Instructions</h3>
-
-  {% for step in recipe.instruction_set.all %}
-    <br>
-    <p><b>Step {{ step.step_number }}</b></p>
-    <p>{{ step.description }}</p>
-  {% endfor %}
-
-  <br>
-  <br>
-  <br>
 {% endblock %}

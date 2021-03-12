@@ -8,6 +8,9 @@ class Recipe(models.Model):
     """Model representing a complete recipe."""
 
     name = models.CharField(max_length=200, help_text="Enter a name for this recipe")
+    description = models.TextField(
+        help_text="Describe your recipe in a sentence or two."
+    )
     servings = models.PositiveIntegerField(
         help_text="Enter the number of servings this recipe makes",
         validators=[
@@ -54,7 +57,7 @@ class Ingredient(models.Model):
     )
     preparation = models.CharField(
         max_length=100,
-        help_text='Describe this ingredient"s preparation (e.g. finely minced) or leave blank',
+        help_text="Describe this ingredient's preparation (e.g. finely minced) or leave blank",
         null=True,
         blank=True,
     )

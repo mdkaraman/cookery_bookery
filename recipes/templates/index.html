@@ -1,28 +1,54 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>COOKERY BOOKERY</h1>  
-  <br>
+
+<div class="block">
+  <div class="content">
+    <p class="title is-3">Cookery (n.) The art or process of preparing food for the table, by dressing, compounding, and the application of heat.</p>
+    <p class="title is-3">Bookery (n.) A collection of books; <em>a library</em>, a bookshop.</p>
+    <br>
+  </div> 
+</div> 
+
+<!-- This closing tag closes the section-class div tag located in base.html -->
+</div>
+
+<div class="box has-background-black">
+  <h1 class="title is-1 has-text-white"> Latest Recipes </h1>
+</div>
+
+<div class="column">
   
-  <p>Cookery (n.) The art or process of preparing food for the table, by dressing, compounding, and the application of heat.</p>
-  <p>Bookery (n.) A collection of books; <b>a library</b>, a bookshop.</p>
-  <br>
-  <p><em>"The tender morsels on the palate melt, And all the force of Cookery is felt."</em></p>
-  <br>  
-  <h2>Newly Added Recipes</h2>
+  {% if newest_recipes %}
+    <div class="grid">
   
-  {% if newest_recipes%}
-    <ul>
-      
-      {% for recipe in newest_recipes%}
-        <li>
-          <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
-        </li>
+      {% for recipe in newest_recipes %}
+        <div class="block" id="gridItem">
+          <a href="{{ recipe.get_absolute_url }}">     
+            <div class="box" id="newRecipePanel">      
+            
+              <div class="box" id="newRecipeHeader">
+                <p class="title is-3 has-text-white">
+                  {{ recipe.name }}  
+                </p>          
+                <p class="subtitle is-5 has-text-white">
+                  By {{ recipe.author }}
+                </p>
+              </div>
+
+              <div class="block" id="newRecipeBlock">
+                <p class="is-size-5">
+                  {{ recipe.description }}
+                </p> 
+              </div>          
+            </div>
+          </a>
+        </div>
       {% endfor %}
-      
-    </ul>
-  {% else %}
-    <p>There are no new recipes :(</p>
+
+    </div>
   {% endif %}
+
+</div>
 
 {% endblock %}

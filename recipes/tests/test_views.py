@@ -8,11 +8,28 @@ from recipes.models import Ingredient, Instruction, Recipe
 class IndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Create test recipes
-        number_of_recipes = 15
+        # Create generic test recipes
+        number_of_recipes = 10
         for recipe_id in range(number_of_recipes):
-            Recipe.objects.create(name=f"Recipe {recipe_id}", servings=2, nota_bene="")
-
+            Recipe.objects.create(
+                name=f"Recipe {recipe_id}", 
+                description="Description",
+                servings=2, 
+                nota_bene=""
+                )
+        # Create a recipe with the longest description
+        Recipe.objects.create(
+            name="Longest Description",
+            description="ABCD EFG HIJK LMNOP QRS TUV WXYZ",
+            servings=2
+            )
+        # Create a recipe with the longest name
+        Recipe.objects.create(
+            name="This is the Recipe with the Longest Name",
+            description="Description",
+            servings=2
+            )
+   
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get("/recipes/")
         self.assertEqual(response.status_code, 200)
@@ -31,16 +48,23 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("newest_recipes" in response.context)
 
-        # Check that 10 recipes are in the template's context
-        self.assertTrue(len(response.context["newest_recipes"]) == 10)
-
-        # Check that recipes are listed newest to oldest
+        # Check that 10 recipes are in the list
         newest_recipes = response.context["newest_recipes"]
-        recipe_id = 15
-        for recipe in newest_recipes:
-            self.assertTrue(recipe.id == recipe_id)
-            recipe_id -= 1
+        self.assertTrue(len(newest_recipes) == 10)
 
+        # Check that the oldest recipes are not included
+        first_recipe = Recipe.objects.get(pk=1)
+        second_recipe = Recipe.objects.get(pk=2)
+        self.assertTrue(first_recipe not in newest_recipes)
+        self.assertTrue(second_recipe not in newest_recipes)        
+
+        # Check that the longest description is 5th in the list
+        longest_description = max(newest_recipes, key=lambda r : len(r.description))
+        self.assertEqual(longest_description.name, "Longest Description")
+
+        # Check that the longest name is 3rd in the list
+        longest_name = max(newest_recipes, key=lambda r : len(r.name))
+        self.assertEqual(longest_name.name, "This is the Recipe with the Longest Name")
 
 class RecipeListViewTest(TestCase):
     @classmethod
@@ -178,7 +202,7 @@ class RecipeCreateViewTest(TestCase):
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("create-recipe"))
         self.assertRedirects(
-            response, "/accounts/login/?next=/recipes/submit-recipe/create"
+            response, "/accounts/login/?next=/recipes/submit-recipe/create/"
         )
 
     def test_logged_in_uses_correct_template(self):
@@ -195,6 +219,7 @@ class RecipeCreateViewTest(TestCase):
             reverse("create-recipe"),
             {
                 "name": "Pizza",
+                "description": "So good you can put anchovies on it.",
                 "servings": "8",
                 "author": "test_user1",
             },
@@ -203,6 +228,7 @@ class RecipeCreateViewTest(TestCase):
         recipe = Recipe.objects.get(pk=1)
         self.assertTrue(recipe)
         self.assertEqual(recipe.name, "Pizza")
+        self.assertEqual(recipe.description, "So good you can put anchovies on it.")
         self.assertEqual(recipe.servings, 8)
         self.assertEqual(recipe.nota_bene, "")
         self.assertEqual(recipe.author, user)
@@ -302,7 +328,12 @@ class RecipeUpdateViewTest(TestCase):
         )
         test_user1.save()
 
-        recipe = Recipe.objects.create(name="Pizza", servings=8, author=test_user1)
+        recipe = Recipe.objects.create(
+            name="Pizza",
+            description="So good you can put anchovies on it.",
+            servings=8,
+            author=test_user1,
+        )
         ingredient = Ingredient.objects.create(
             recipe=recipe, name="Dough", amount="12 oz."
         )
@@ -331,6 +362,7 @@ class RecipeUpdateViewTest(TestCase):
             "/recipes/submit-recipe/1/update_recipe?next=/recipes/submit-recipe/1/add-ingredient",
             {
                 "name": "Pepperoni Pizza",
+                "description": "But it's better with pepperoni!",
                 "servings": "10",
                 "nota_bene": "Spicy!",
                 "author": "test_user1",
@@ -338,6 +370,7 @@ class RecipeUpdateViewTest(TestCase):
         )
         recipe = Recipe.objects.get(pk=1)
         self.assertEqual(recipe.name, "Pepperoni Pizza")
+        self.assertEqual(recipe.description, "But it's better with pepperoni!")
         self.assertEqual(recipe.servings, 10)
         self.assertEqual(recipe.nota_bene, "Spicy!")
         self.assertEqual(recipe.author, user)

@@ -122,11 +122,16 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "cookery_bookery/static/"),
+]
 
 # Redirect to Home URL after login
 LOGIN_REDIRECT_URL = "/"
+
+# Use accounts app as home for login url
+LOGIN_URL = "/accounts/login/"
 
 # Allow for email testing (only in development)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

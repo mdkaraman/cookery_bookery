@@ -1,9 +1,6 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>COOKERY BOOKERY</h1> 
-  <br>
-
-  <p>Logged out!</p>
+  <h2 class="title is-2">Logged out!</h2>
   <a href="{% url 'login'%}">Click here to login again.</a>
 {% endblock %}

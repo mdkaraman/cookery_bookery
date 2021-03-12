@@ -1,83 +1,154 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1>COOKERY BOOKERY</h1> 
-<br>
 
-<h2>Submit a Recipe</h2>
+<div class="block">
+  <h1 class="title is-1 is-spaced">Submit a Recipe</h1>
+  
+  <div class="box has-background-black">
+    <h1 class="title is-2 has-text-white">
+      {{ recipe.name }}
+      {% if recipe.author %}
+      <h3 class="subtitle is-5 has-text-white">
+        By {{ recipe.author }}
+      </h3>
+      {% endif %}
+    </h1>
+  </div>
 
-  <p><b>Name:</b> {{ recipe.name }}</p>
-  <p><b>Servings:</b> {{ recipe.servings }}</p>
+  <h2 class="subtitle is-5"><em>"{{ recipe.description }}"</em></h2>
+  
+  <div class="block">
+    <span class="tag is-large" >
+      SERVES {{ servings_as_word }}
+    </span>
+  </div>
+
+  <div class="block"></div>
   {% if recipe.nota_bene %}
-    <p><b>N.B.</b></p> 
-      <p>{{ recipe.nota_bene }}</p>
+    <p class="is-size-4"><strong>N.B.</strong></p> 
+    <p class="is-size-5">{{ recipe.nota_bene }}</p>
   {% endif %}
-  
-  <p><em>Need to change something?</em></p>
-  {% if update %}
-    <p><em>You need to finish editing this instruction before you can edit your recipe!</em></p>
-  {% else %}
-    <p><a href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> Edit Recipe</a></p>
-  {% endif %}
-  
-  <h3>Ingredients</h3>
-  
-  <ul>
+</div>
+
+<div class="block">
+    <p class="is-size-5">
+      <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
+        Edit Recipe
+      </a>
+    </p>
+</div>
+
+<h2 class="title is-2" id="ingredientsTitle">
+  Ingredients
+</h2>  
+<div class="column is-10">
+  <ul class="is-size-4">
     {% for ingredient in recipe.ingredient_set.all %}
-        <li>{{ ingredient }}
-          {% if not update %} - 
-            <a href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}">Edit</a> -
-            <a href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
+        <li>{{ ingredient }} </li>
+        
+        <li>
+          {% if not update %} 
+          <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+              edit
+          </a> 
+          <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
+            delete 
+          </a>
           {% endif %}
-        </li>
-    {% endfor %}
-    <br>
-    {% if not update %} 
-      <p><em>Forgot to add an ingredient?</em></p>
-      <p><a href="{% url 'add-ingredient' recipe.id %}">Add Ingredient</a></p>
-    {% else %}
-      <p><em>Need to add, edit or delete an ingredient?</em></p>
-      <p><em>You need to finish editing this instruction before you can edit your ingredients!</em></p>
-    {% endif %}
-  </ul>
-
-  <h3>Add Instructions</h3>
-
-  <ul>
-    {% for instruction in recipe.instruction_set.all %}
-        {% if pk != instruction.id %}
-            <p><b>Step {{ instruction.step_number }}</b>
-              {% if not update %} - 
-                <a href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}">Edit</a> - 
-                <a href="{% url 'delete-instruction' instruction.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete </a>
-              {% endif %}
-            </p>
-            <p>{{ instruction.description }}</p>
-        {% endif %}
+        </li> 
     {% endfor %} 
   </ul>
+</div>
 
-  <form action="" method="post">
-    {% csrf_token %}
-    
-    {% if update %}
-      <h4>Edit Ingredient</h4>
-    {% endif %}
-    
-    <table>
-    {{ form.as_table }}
-    </table>
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
-    <input type="submit" value="Add Instruction">
-  </form>
+<div class="block" id="addIngredientButton">
+  <p>
+    <a class="button is-info is-light" href="{% url 'add-ingredient' recipe.id %}">
+      Add Ingredient
+    </a>
+  </p> 
+</div>
 
-  {% if recipe %}
+<h2 class="title is-2">
+  Instructions
+</h2> 
+
+<div class="column is-10">
+  {% for instruction in recipe.instruction_set.all %}
+    {% if instruction.id != pk %}
+      <div class="block">
+        <p class="is-size-4"><strong>Step {{ instruction.step_number }}</strong></p>
+
+        <p class="is-size-4">{{ instruction.description }} </p>
+      
+        <p>
+          {% if not update %} 
+          <a class="button is-info is-light is-small" href="{% url 'update-instruction' instruction.id %}?next={{ request.path|urlencode }}"> 
+              edit
+          </a> 
+          <a class="button is-danger is-light is-small" href="{% url 'delete-instruction' instruction.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
+            delete 
+          </a>
+          {% endif %}
+        </p>
+      </div>
+      {% endif %}
+  {% endfor %} 
+</div>
+
+
+<div class="column is-8">
+  <div class="box" id="boxPanel">      
+    
+    <div class="box" id="boxHeader">
+      <h1 class="title is-3 has-text-white">
+        {% if update %}
+          Edit Instruction
+        {% else %}
+          New Instruction
+        {% endif %}
+      </h1>
+    </div>
+    
+    <div class="block" id="boxPadded">
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="column is-10">
+          {% for field in form %}
+          <div class="block">
+              <div class="fieldWrapper">
+                <p>{{ field.label_tag }}
+                <br> 
+                {{ field }}
+                </p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="block" id="boxButton">
+          <input type="hidden" name="next" value="{{ request.GET.next }}">
+          <input type="submit" class="button is-black is-medium" 
+            {% if update %} 
+              value="Update Instruction" 
+            {% else %} 
+              value="Create Instruction" 
+            {% endif %}>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if recipe %}
   <br>
-    <h4>All done adding instructions?</h4>
-    <form action='{% url "recipe-detail" recipe.id %}' method="get"><button type="submit">Submit Recipe</button></form>
-  {% endif %}
-  
   <br>
-  <br>
-  <br>
+  <div class="block" >
+    <h4 class="title is-3">All done adding instructions?</h4>
+    <form action='{% url "recipe-detail" recipe.id %}' method="get">
+      <button class="button is-large is-black" type="submit">Submit Recipe</button>
+    </form>
+  </div>
+{% endif %} 
+
 {% endblock %}

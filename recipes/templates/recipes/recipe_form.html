@@ -1,16 +1,61 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1>COOKERY BOOKERY</h1> 
-<br>
 
-<h2>Submit a Recipe</h2>
-  <form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-    </table>
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
-    <input type="submit" value="Create Recipe">
-  </form>
+<div class="block">
+  <h1 class="title is-1 is-spaced">
+    Submit a Recipe
+  </h1>
+
+  <div class="column is-8">
+    <div class="box" id="boxPanel">      
+      
+      <div class="box" id="boxHeader">
+        <h1 class="title is-2 has-text-white">
+          {% if update %}
+            Edit Recipe
+          {% else %}
+            New Recipe
+          {% endif %}
+        </h1>
+      </div>
+      
+      <div class="block" id="boxPadded">
+
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="column is-10">
+            {% for field in form %}
+            <div class="block">
+                <div class="fieldWrapper">
+                  <p>{{ field.label_tag }}
+                  <br> 
+                  {{ field }}
+                  {% if field.help_text and field.label == 'N.B.' or field.label == 'Description' %}
+                    <p class="is-size-5"><em>{{ field.help_text|safe }}</em></p>
+                  {% endif %}
+                  </p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+       
+          <div class="block" id="boxButton">
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            <input type="submit" class="button is-black is-medium" 
+              {% if update %} 
+                value="Update Recipe" 
+              {% else %} 
+                value="Create Recipe" 
+              {% endif %}>
+          </div>
+        
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

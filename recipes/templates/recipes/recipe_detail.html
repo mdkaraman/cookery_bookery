@@ -1,58 +1,83 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>COOKERY BOOKERY</h1> 
-  <br>
 
-  <h1>{{ recipe.name }}</h1>
-  
-  {% if recipe.author %}
-    <p>By {{ recipe.author }}</p>
+<div class="block">
+  <div class="box has-background-black">
+    
+    <h1 class="title is-1 has-text-white">{{ recipe }}                 
+      {% if user.is_authenticated %}
+      
+        {% if favorites and recipe in favorites %}
+          <a href="{% url 'recipe-detail' recipe.id %}?action=remove">
+            <span class="icon"><i class="fas fa-heart"></i></span>
+          </a>
+        {% else %}
+          <a href="{% url 'recipe-detail' recipe.id %}?action=favorite">
+          <span class="icon"><i class="far fa-heart"></i></span>
+          </a>
+        {% endif %}
+      
+      {% endif %}
+    </h1> 
+
+    {% if recipe.author %}
+      <h3 class="subtitle is-4 has-text-white">By {{ recipe.author }}</h3>
+    {% endif %}
+  </div>
+
+  <h2 class="subtitle is-4"><em>"{{ recipe.description }}"</em></h2>
+
+  <div class="block">
+    <span class="tag is-large" >
+      SERVES {{ servings_as_word }}
+    </span>
+  </div>
+    
+  {% if recipe.nota_bene %}
+    <div class="block">
+      <p class="is-size-4"><strong>N.B.</strong></p> 
+      <p class="is-size-5">{{ recipe.nota_bene }}</p>
+    </div>
+  {% else %}
+    
   {% endif %}
-  
+
+  <div class="block">  
+    <h2 class="title is-2" id="ingredientsTitle">
+      Ingredients
+    </h2>
+    <div class="column is-10">
+      <ul class="subtitle is-4">
+        {% for ingredient in recipe.ingredient_set.all %}
+            <li>{{ ingredient }}</li>
+        {% endfor %} 
+      </ul>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2 class="title is-2">
+      Instructions
+    </h2> 
+    <div class="column is-10">
+      {% for instruction in recipe.instruction_set.all %}
+        <div class="block">
+          <p class="title is-4"><strong>Step {{ instruction.step_number }}</strong></p>
+          <p class="subtitle is-4">{{ instruction.description }}</p> 
+        </div>
+      {% endfor %} 
+    </div>
+  </div>
+
   {% if user.is_authenticated %}
-    {% if favorites and recipe in favorites  %}
-      <p><em>This recipe is one of your favorites!</em></p>
-    {% else %}
-      <p><a href="{% url 'recipe-detail' recipe.id %}?action=favorite">Add to My Favorites!</a></p>
+    {% if user.username == recipe.author.username %}
+        <a class="button is-danger is-light" href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
+          Delete Recipe 
+        </a>
     {% endif %}
   {% endif %}
+ 
+</div>
 
-  {% if recipe.author == request.user %}
-    <p><strong><em>Author Options:</em></strong></p>
-    <ul>
-      <li>
-        <a href="{% url 'delete-recipe' recipe.id %}?next={{ request.path|urlencode }}" class="text-danger"> Delete Recipe </a>
-      </li>
-    </ul>  
-
-  {% endif %}
-
-  <p><b>Servings:</b> {{ recipe.servings }}</p>
-  
-  {% if recipe.nota_bene %}
-    <p><b>N.B.</b></p>
-    <p>{{ recipe.nota_bene }}</p>
-  {% endif %}
-
-  <h3>Ingredients</h3>
-  <ul>
-    {% for ingredient in recipe.ingredient_set.all %}
-      <li>{{ ingredient }}</li>
-    {% endfor %}  
-  </ul>
-
-
-  <br>
-  <h3>Instructions</h3>
-
-  {% for step in recipe.instruction_set.all %}
-    <br>
-    <p><b>Step {{ step.step_number }}</b></p>
-    <p>{{ step.description }}</p>
-  {% endfor %}
-
-  <br>
-  <br>
-  <br>
 {% endblock %}

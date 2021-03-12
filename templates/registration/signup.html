@@ -1,37 +1,76 @@
-{% extends "base_generic.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>COOKERY BOOKERY</h1> 
-  <br>
-  
-  <h2>Create an account</h2>
-  <form method="post">
-    {% csrf_token %}
-    
-    {% if form.errors %}
-      {% for field in form %} 
-        {% for error in field.errors %}
-          <div class="alert alert-danger">
+
+<div class="block">
+  <div class="column is-9">
+    <div class="box" id="boxPanel">
+      <div class="box" id="boxHeader">
+    <h1 class="title is-2 has-text-white">
+      Create an account
+    </h1>
+  </div>
+  <div class="block" id="boxPadded">
+    <form method="post">
+      {% csrf_token %}
+      
+      {% if form.errors %}
+        {% for field in form %} 
+          {% for error in field.errors %}
+            <div class="notification is-danger is-light">
+              <strong>{{ error|escape }}</strong>
+            </div>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <div class="notification is-danger is-light">
             <strong>{{ error|escape }}</strong>
           </div>
-        {% endfor %}
-      {% endfor %}
-      {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-          <strong>{{ error|escape }}</strong>
+        {% endfor %}   
+      {% endif %}
+ 
+      <div class="column is-7">
+        
+        <div class="block">
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.username.label_tag }}</p>
+            <p>{{ form.username }}</p>
+          </div>
         </div>
-      {% endfor %}   
-    {% endif %}
-
-    {% for field in form %}
-      <div class="fieldWrapper">
-        <b>{{ field.label_tag }}</b> {{ field }}
-        {% if field.help_text %}
-          <p class="help">{{ field.help_text|safe }}</p>
-        {% endif %}
+        <div class="block">    
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.email.label_tag }}</p>
+            <p>{{ form.email }}</p>
+          </div>
+        </div>
+        <div class="block">
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.password1.label_tag }}</p>
+            <p>{{ form.password1 }}</p>
+          </div>
+        </div>
       </div>
-    {% endfor %}
+      <div class="column is-full">
+        <p>{{ form.password1.help_text|safe }}</p>
+      </div>
+      <div class="column is-7">
+        <div class="block">
+          <div class="fieldWrapper">
+            <p class="is-size-5">{{ form.password2.label_tag }}</p>
+            <p>{{ form.password2 }}</p>
+          </div>
+        </div>
+      </div>
+ 
+    <div class="block" id="boxButton">
+        <button type="submit" class="button is-black is-medium">
+          Sign Up
+        </button>
+      </div>
+      </div>
+    </form>
+  </div>
+  </div>
+</div>
 
-    <button type="submit">Sign Up</button>
-  </form>
 {% endblock %}
