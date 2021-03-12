@@ -22,22 +22,31 @@ class IndexView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get 9 newest recipes
-        newest_recipes = list(Recipe.objects.order_by("-pk")[:9])
+        # Get 10 newest recipes
+        newest_recipes = list(Recipe.objects.order_by("-pk")[:10])
+        # Use variable for last index in case there are less than 10 recipes
+        max_index = len(newest_recipes) - 1
 
-        for recipe in newest_recipes:
-            # A description is too long for the display box if it is over 100 chars
-            if len(recipe.description) > 100:
-                # Truncate the long description and add ellipsis
-                recipe.description = recipe.description[:99] + "..."
+        if newest_recipes and max_index >= 5:
+            # Sort the recipes by description length
+            newest_recipes.sort(key=lambda r: len(r.description))
+            # The template expects the longest description to be loaded 5th
+            newest_recipes[max_index], newest_recipes[4] = (
+                newest_recipes[4],
+                newest_recipes[max_index],
+            )
+            # Ignore the longest description recipe
+            temp = newest_recipes[:4] + newest_recipes[5:]
+            # Get the recipe with the longest title and where it occurs in the list
+            longest_title = max(temp, key=lambda r: len(r.name))
+            index = newest_recipes.index(longest_title)
+            # The template expects the longest title to be loaded 3rd
+            newest_recipes[index], newest_recipes[2] = (
+                newest_recipes[2],
+                newest_recipes[index],
+            )
 
-        # Prepare the context variable for the new recipes list
-        context["newest_recipes"] = []
-        for i in range(len(newest_recipes)):
-            if i % 3 == 0:
-                # Add the recipes in lists of 3 for template rendering purposes
-                context["newest_recipes"].append(newest_recipes[i : i + 3])
-
+        context["newest_recipes"] = newest_recipes
         return context
 
 

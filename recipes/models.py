@@ -9,7 +9,7 @@ class Recipe(models.Model):
 
     name = models.CharField(max_length=200, help_text="Enter a name for this recipe")
     description = models.TextField(
-        help_text="Describe your recipe in a single sentence!"
+        help_text="Describe your recipe in a sentence or two."
     )
     servings = models.PositiveIntegerField(
         help_text="Enter the number of servings this recipe makes",

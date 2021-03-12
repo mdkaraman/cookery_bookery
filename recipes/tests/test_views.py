@@ -8,11 +8,28 @@ from recipes.models import Ingredient, Instruction, Recipe
 class IndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Create test recipes
-        number_of_recipes = 15
+        # Create generic test recipes
+        number_of_recipes = 10
         for recipe_id in range(number_of_recipes):
-            Recipe.objects.create(name=f"Recipe {recipe_id}", servings=2, nota_bene="")
-
+            Recipe.objects.create(
+                name=f"Recipe {recipe_id}", 
+                description="Description",
+                servings=2, 
+                nota_bene=""
+                )
+        # Create a recipe with the longest description
+        Recipe.objects.create(
+            name="Longest Description",
+            description="ABCD EFG HIJK LMNOP QRS TUV WXYZ",
+            servings=2
+            )
+        # Create a recipe with the longest name
+        Recipe.objects.create(
+            name="This is the Recipe with the Longest Name",
+            description="Description",
+            servings=2
+            )
+   
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get("/recipes/")
         self.assertEqual(response.status_code, 200)
@@ -26,25 +43,28 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "index.html")
 
-    def test_displays_nine_most_recent_recipes(self):
+    def test_displays_ten_most_recent_recipes(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("newest_recipes" in response.context)
 
-        # Flatten the context variable's list of lists
+        # Check that 10 recipes are in the list
         newest_recipes = response.context["newest_recipes"]
-        flattened_list = [recipe for triplet in newest_recipes for recipe in triplet]
+        self.assertTrue(len(newest_recipes) == 10)
 
-        # Check that 9 recipes are in the flattened list
-        self.assertTrue(len(flattened_list) == 9)
+        # Check that the oldest recipes are not included
+        first_recipe = Recipe.objects.get(pk=1)
+        second_recipe = Recipe.objects.get(pk=2)
+        self.assertTrue(first_recipe not in newest_recipes)
+        self.assertTrue(second_recipe not in newest_recipes)        
 
-        # Check that recipes are listed newest to oldest
-        newest_recipes = flattened_list
-        recipe_id = 15
-        for recipe in newest_recipes:
-            self.assertTrue(recipe.id == recipe_id)
-            recipe_id -= 1
+        # Check that the longest description is 5th in the list
+        longest_description = max(newest_recipes, key=lambda r : len(r.description))
+        self.assertEqual(longest_description.name, "Longest Description")
 
+        # Check that the longest name is 3rd in the list
+        longest_name = max(newest_recipes, key=lambda r : len(r.name))
+        self.assertEqual(longest_name.name, "This is the Recipe with the Longest Name")
 
 class RecipeListViewTest(TestCase):
     @classmethod
