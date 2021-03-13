@@ -35,6 +35,12 @@ td {
   background-color:white;
 }
 
+ul .mobileSidebarButton {
+  padding-top: .5em;
+  margin-left: .75em;
+  margin-right: .75em;
+}
+
 .navbar {
   background-color: #fee440;
   box-shadow: 0 0 12px 0 rgba(0,0,0,0.3);
@@ -55,6 +61,18 @@ td {
 
 a:hover #boxPanel, a:hover #newRecipePanel {
   box-shadow: 0 0 12px 0 rgba(0,0,0,0.4);
+}
+
+#mobileSignupButton {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+#logInOutButton {
+  color: black;
+  background-color: #fee440;
+  border: solid;
+  border-width: thin;
 }
 
 #boxPanel {
