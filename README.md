@@ -1,5 +1,5 @@
 # cookery_bookery
-cookerybookery.herokuapp.com/recipes/
+https://cookerybookery.herokuapp.com/recipes/
 
 A cooking website for finding and sharing recipes.
 
