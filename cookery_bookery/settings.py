@@ -134,4 +134,9 @@ LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/accounts/login/"
 
 # Allow for email testing (only in development)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'cookerybookeryapp@gmail.com'
+EMAIL_HOST_PASSWORD = 'godOfCookery'
