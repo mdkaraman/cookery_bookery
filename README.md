@@ -1,2 +1,7 @@
 # cookery_bookery
-A cooking website for finding and sharing recipes (written in Django.)
+cookerybookery.herokuapp.com/recipes/
+
+A cooking website for finding and sharing recipes.
+
+Written in Django.
+Styled with Bulma.
