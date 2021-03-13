@@ -21,7 +21,7 @@
               COOKERY BOOKERY
             </h1>
           </div>
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+          <a role="button" class="navbar-burger" aria-label="menu">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -54,8 +54,8 @@
                   <a class="button is-black" href="{% url 'signup' %}">
                     <strong>Sign up</strong>
                   </a>
-                  <a class="button is-light" href="{% url 'login'%}?next={{index}}" >
-                    Log in
+                  <a class="button" id="logInOutButton" href="{% url 'login'%}?next={{index}}" >
+                    <strong>Log in</strong>
                   </a>
                 </div>
               </div>
@@ -69,16 +69,40 @@
 
     <div class="column is-2" >
       {% block sidebar %}
+     
         <aside class="menu is-medium">          
+          
           <ul class="menu-list ">
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'all-recipes' %}">All Recipes</a></li>         
             <li><a href="{% url 'my-recipes' %}">My Recipes</a></li>
             <li><a href="{% url 'my-favorites' %}">My Favorites</a></li>
             <li><a href="{% url 'create-recipe' %}">Submit a Recipe</a></li>
+            
+            {% if user.is_authenticated %}
+              <li class="mobileSidebarButton is-hidden-tablet" id="mobileBorder">
+                <a class="button is-black is-rounded" href="{% url 'user-detail' user.username %}">My Account</a>
+              </li>
+              <li class="mobileSidebarButton is-hidden-tablet">
+                <a class="button is-rounded" id="logInOutButton" href="{% url 'logout' %}">Logout</a>
+              </li>
+            {% else %}
+              <li class="mobileSidebarButton is-hidden-tablet">        
+                <a class="button is-black is-rounded" href="{% url 'signup' %}">
+                  <strong>Sign up</strong>
+                </a>        
+              </li>
+              <li class="mobileSidebarButton is-hidden-tablet">
+                <a class="button is-rounded" id="logInOutButton" href="{% url 'login'%}?next={{index}}" >
+                  <strong>Log in</strong>
+                </a>
+              </li>
+            {% endif %}
           </ul>
+       
         </aside>
       {% endblock %}
+
     </div>
     
     <div class="column is-8 is-vcentered">
