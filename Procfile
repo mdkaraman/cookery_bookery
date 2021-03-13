@@ -1,2 +1,2 @@
-web: gunicorn locallibrary.wsgi --log-file -
+web: gunicorn cookery_bookery.wsgi --log-file -
 
