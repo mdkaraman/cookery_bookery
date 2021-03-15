@@ -50,7 +50,7 @@
     {% for ingredient in recipe.ingredient_set.all %}
     <tr class="is-size-5">
       <td class="ingredientCell">{{ ingredient }}</td>
-      <td> 
+      <td class="buttonCell"> 
         <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
           edit
         </a> 

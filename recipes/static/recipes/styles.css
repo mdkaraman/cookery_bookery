@@ -169,6 +169,10 @@ a:hover #boxPanel, a:hover #newRecipePanel {
   padding-bottom: .5em;
 }
 
+.buttonCell {
+  text-align: center;
+}
+
 .justifyBlock {
   text-align: justify;
 }
