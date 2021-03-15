@@ -157,6 +157,10 @@ a:hover #boxPanel, a:hover #newRecipePanel {
   grid-auto-flow: dense;  
 }
 
+.fas, .far {
+  text-rendering: optimizeLegibility;
+}
+
 #gridItem {
   margin: 1em;
   padding: 0;
