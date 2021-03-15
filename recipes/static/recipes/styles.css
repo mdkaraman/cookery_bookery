@@ -177,6 +177,10 @@ a:hover #boxPanel, a:hover #newRecipePanel {
   text-align: justify;
 }
 
+.grid .is-hidden-desktop {
+  margin: 1em;
+}
+
 #gridItem {
   margin: 1em;
   padding: 0;

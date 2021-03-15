@@ -23,7 +23,32 @@
     <div class="grid">
   
       {% for recipe in newest_recipes %}
-        <div class="block" id="gridItem">
+        
+        <div class="block is-hidden-desktop">
+        
+          <a href="{{ recipe.get_absolute_url }}">     
+            <div class="box" id="newRecipePanel">      
+            
+              <div class="box" id="newRecipeHeader">
+                <p class="title is-3 has-text-white">
+                  {{ recipe.name }}  
+                </p>          
+                <p class="subtitle is-5 has-text-white">
+                  By {{ recipe.author }}
+                </p>
+              </div>
+
+              <div class="block" id="newRecipeBlock">
+                <p class="is-size-5">
+                  {{ recipe.description }}
+                </p> 
+              </div>          
+            </div>
+          </a>
+      
+        </div>
+      
+        <div class="block is-hidden-touch" id="gridItem">
           <a href="{{ recipe.get_absolute_url }}">     
             <div class="box" id="newRecipePanel">      
             
