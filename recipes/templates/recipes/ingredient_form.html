@@ -2,35 +2,27 @@
 
 {% block content %}
 
-<div class="block">
-  <h1 class="title is-1 is-spaced">
-    Submit a Recipe
+<h1 class="title is-1 is-spaced">
+  Submit a Recipe
+</h1>
+
+<div class="box has-background-black">
+  <h1 class="title is-2 has-text-white">
+    {{ recipe.name }}
+    {% if recipe.author %}
+    <h3 class="subtitle is-5 has-text-white">
+      By {{ recipe.author }}
+    </h3>
+    {% endif %}
   </h1>
+</div>
+<h2 class="subtitle is-5"><em>"{{ recipe.description }}"</em></h2>
 
-  <div class="box has-background-black">
-    <h1 class="title is-2 has-text-white">
-      {{ recipe.name }}
-      {% if recipe.author %}
-      <h3 class="subtitle is-5 has-text-white">
-        By {{ recipe.author }}
-      </h3>
-      {% endif %}
-    </h1>
-  </div>
-  <h2 class="subtitle is-5"><em>"{{ recipe.description }}"</em></h2>
-  
-  <div class="block">
-    <span class="tag is-large" >
-      SERVES {{ servings_as_word }}
-    </span>
-  </div>
-
-  <div class="block"></div>
+<div class="block">
+  <div class="column is-8">
   {% if recipe.nota_bene %}
-    
-      <p class="is-size-4"><strong>N.B.</strong></p> 
-      <p class="is-size-5">{{ recipe.nota_bene }}</p>
-   
+    <p class="is-size-4"><strong>N.B.</strong></p> 
+    <p class="is-size-5 justifyBlock">{{ recipe.nota_bene }}</p>
   {% endif %}
 </div>
 
@@ -42,28 +34,33 @@
   </p>
 </div>
 
-<h2 class="title is-2" id="ingredientsTitle">
+<div class="block recipeBorder"></div>
+
+<div class="block">
+  <span class="tag is-large" >
+    SERVES {{ servings_as_word }}
+  </span>
+</div>
+
+<h2 class="title is-2" id="recipeTitle">
   Ingredients
 </h2>  
-<div class="column is-10">
-  <ul class="is-size-4">
+<div class="column is-7">
+  <table>
     {% for ingredient in recipe.ingredient_set.all %}
-      {% if pk != ingredient.id %}
-          <li>{{ ingredient }} </li>
-        
-          <li>
-            {% if not update %} 
-            <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
-                edit
-            </a> 
-            <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
-              delete 
-            </a>
-            {% endif %}
-          </li>
-      {% endif %}
-    {% endfor %} 
-  </ul>
+    <tr class="is-size-5">
+      <td class="ingredientCell">{{ ingredient }}</td>
+      <td> 
+        <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+          edit
+        </a> 
+        <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
+          delete 
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
 </div>
 
 <div class="column is-8">
@@ -125,4 +122,3 @@
 {% endif %}
 
 {% endblock %}
-

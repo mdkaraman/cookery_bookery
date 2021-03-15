@@ -27,44 +27,48 @@
   </div>
 
   <h2 class="subtitle is-4"><em>"{{ recipe.description }}"</em></h2>
+    
+  {% if recipe.nota_bene %}
+    <div class="block">
+      <div class="column is-8">
+        <p class="is-size-4"><strong>N.B.</strong></p> 
+        <p class="is-size-5 justifyBlock">{{ recipe.nota_bene }}</p>
+      </div>
+    </div>    
+  {% endif %}
+
+  <div class="block recipeBorder"></div>
 
   <div class="block">
     <span class="tag is-large" >
       SERVES {{ servings_as_word }}
     </span>
   </div>
-    
-  {% if recipe.nota_bene %}
-    <div class="block">
-      <p class="is-size-4"><strong>N.B.</strong></p> 
-      <p class="is-size-5">{{ recipe.nota_bene }}</p>
-    </div>
-  {% else %}
-    
-  {% endif %}
 
   <div class="block">  
-    <h2 class="title is-2" id="ingredientsTitle">
+    <h2 class="title is-2" id="recipeTitle">
       Ingredients
     </h2>
-    <div class="column is-10">
-      <ul class="subtitle is-4">
+    <div class="column is-7">
+      <table>
         {% for ingredient in recipe.ingredient_set.all %}
-            <li>{{ ingredient }}</li>
-        {% endfor %} 
-      </ul>
+        <tr class="is-size-5">
+          <td>{{ ingredient }}</td>         
+        </tr>
+        {% endfor %}
+      </table>
     </div>
   </div>
 
   <div class="block">
-    <h2 class="title is-2">
+    <h2 class="title is-2 recipeTitle" id="recipeTitle">
       Instructions
     </h2> 
-    <div class="column is-10">
+    <div class="column is-8">
       {% for instruction in recipe.instruction_set.all %}
         <div class="block">
           <p class="title is-4"><strong>Step {{ instruction.step_number }}</strong></p>
-          <p class="subtitle is-4">{{ instruction.description }}</p> 
+          <p class="subtitle is-5 justifyBlock">{{ instruction.description }}</p> 
         </div>
       {% endfor %} 
     </div>
