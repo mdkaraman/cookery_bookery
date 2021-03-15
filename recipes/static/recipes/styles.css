@@ -170,7 +170,7 @@ a:hover #boxPanel, a:hover #newRecipePanel {
 }
 
 .buttonCell {
-  text-align: center;
+  padding-left: 1em;
 }
 
 .justifyBlock {
