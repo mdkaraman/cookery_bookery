@@ -45,7 +45,7 @@ class IndexView(generic.TemplateView):
                 newest_recipes[2],
                 newest_recipes[index],
             )
-
+        print(newest_recipes)
         context["newest_recipes"] = newest_recipes
         return context
 
