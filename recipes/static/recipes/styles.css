@@ -127,9 +127,9 @@ a:hover #boxPanel, a:hover #newRecipePanel {
   font-size: 2em;
 }
 
-#ingredientsTitle {
-  margin-bottom: 0;
-}
+#recipeTitle {
+  margin-bottom: .2em;
+} 
 
 #newRecipePanel {
   padding: 0 0 1.5em 0;
@@ -159,6 +159,18 @@ a:hover #boxPanel, a:hover #newRecipePanel {
 
 .fas, .far {
   text-rendering: optimizeLegibility;
+}
+
+.recipeBorder {
+  border-bottom: 1px solid hsla(0,0%,43.9%,.5); 
+}
+
+.ingredientCell {
+  padding-bottom: .5em;
+}
+
+.justifyBlock {
+  text-align: justify;
 }
 
 #gridItem {

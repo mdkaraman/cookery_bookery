@@ -2,84 +2,85 @@
 
 {% block content %}
 
+<h1 class="title is-1 is-spaced">Submit a Recipe</h1>
+
+<div class="box has-background-black">
+  <h1 class="title is-2 has-text-white">
+    {{ recipe.name }}
+    {% if recipe.author %}
+    <h3 class="subtitle is-5 has-text-white">
+      By {{ recipe.author }}
+    </h3>
+    {% endif %}
+  </h1>
+</div>
+
+<h2 class="subtitle is-5"><em>"{{ recipe.description }}"</em></h2>
+
 <div class="block">
-  <h1 class="title is-1 is-spaced">Submit a Recipe</h1>
-  
-  <div class="box has-background-black">
-    <h1 class="title is-2 has-text-white">
-      {{ recipe.name }}
-      {% if recipe.author %}
-      <h3 class="subtitle is-5 has-text-white">
-        By {{ recipe.author }}
-      </h3>
-      {% endif %}
-    </h1>
-  </div>
-
-  <h2 class="subtitle is-5"><em>"{{ recipe.description }}"</em></h2>
-  
-  <div class="block">
-    <span class="tag is-large" >
-      SERVES {{ servings_as_word }}
-    </span>
-  </div>
-
-  <div class="block"></div>
+  <div class="column is-8">
   {% if recipe.nota_bene %}
     <p class="is-size-4"><strong>N.B.</strong></p> 
-    <p class="is-size-5">{{ recipe.nota_bene }}</p>
+    <p class="is-size-5 justifyBlock">{{ recipe.nota_bene }}</p>
   {% endif %}
 </div>
 
 <div class="block">
-    <p class="is-size-5">
-      <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
-        Edit Recipe
-      </a>
-    </p>
+  <p class="is-size-5">
+    <a class="button is-info is-light" href="{% url 'update-recipe' recipe.id %}?next={{ request.path|urlencode }}"> 
+      Edit Recipe
+    </a>
+  </p>
 </div>
 
-<h2 class="title is-2" id="ingredientsTitle">
+<div class="block recipeBorder"></div>
+
+<div class="block">
+  <span class="tag is-large" >
+    SERVES {{ servings_as_word }}
+  </span>
+</div>
+
+<h2 class="title is-2" id="recipeTitle">
   Ingredients
 </h2>  
-<div class="column is-10">
-  <ul class="is-size-4">
+<div class="column is-7">
+  <table>
     {% for ingredient in recipe.ingredient_set.all %}
-        <li>{{ ingredient }} </li>
-        
-        <li>
-          {% if not update %} 
-          <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
-              edit
-          </a> 
-          <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
-            delete 
-          </a>
-          {% endif %}
-        </li> 
-    {% endfor %} 
-  </ul>
+    <tr class="is-size-5">
+      <td class="ingredientCell">{{ ingredient }}</td>
+      <td> 
+        <a class="button is-info is-light is-small" href="{% url 'update-ingredient' ingredient.id %}?next={{ request.path|urlencode }}"> 
+          edit
+        </a> 
+        <a class="button is-danger is-light is-small" href="{% url 'delete-ingredient' ingredient.id %}?next={{ request.path|urlencode }}" class="text-danger"> 
+          delete 
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
 </div>
 
 <div class="block" id="addIngredientButton">
   <p>
-    <a class="button is-info is-light" href="{% url 'add-ingredient' recipe.id %}">
+    <a class="button is-black" href="{% url 'add-ingredient' recipe.id %}">
       Add Ingredient
     </a>
   </p> 
 </div>
 
-<h2 class="title is-2">
+<h2 class="title is-2" id="recipeTitle">
   Instructions
 </h2> 
 
-<div class="column is-10">
+<div class="column is-8">
   {% for instruction in recipe.instruction_set.all %}
     {% if instruction.id != pk %}
       <div class="block">
         <p class="is-size-4"><strong>Step {{ instruction.step_number }}</strong></p>
 
-        <p class="is-size-4">{{ instruction.description }} </p>
+        <p class="is-size-5 justifyBlock">{{ instruction.description }} </p>
       
         <p>
           {% if not update %} 
