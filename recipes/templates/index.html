@@ -20,7 +20,7 @@
 <div class="column">
   
   {% if newest_recipes %}
-    <div class="grid">
+  <div class="grid"> 
   
       {% for recipe in newest_recipes %}
         
@@ -47,7 +47,7 @@
           </a>
       
         </div>
-      
+    
         <div class="block is-hidden-touch" id="gridItem">
           <a href="{{ recipe.get_absolute_url }}">     
             <div class="box" id="newRecipePanel">      
@@ -68,7 +68,7 @@
               </div>          
             </div>
           </a>
-        </div>
+        </div> 
       {% endfor %}
 
     </div>
